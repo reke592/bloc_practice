@@ -9,7 +9,10 @@ extension ShimmerEffect on Widget {
         highlightColor: Colors.grey.shade100,
         child: Container(
           color: Colors.grey.withAlpha(50),
-          child: this,
+          child: AbsorbPointer(
+            absorbing: true,
+            child: this,
+          ),
         ),
       );
     } else {
