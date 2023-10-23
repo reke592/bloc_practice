@@ -1,4 +1,4 @@
-import 'package:bloc_practice/src/tickets/presentation/routes.dart';
+import 'package:bloc_practice/src/tickets/tickets.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
