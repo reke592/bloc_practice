@@ -5,7 +5,6 @@ enum TicketListStates {
   loading,
   success,
   error,
-  focused,
 }
 
 class TicketListState extends Equatable {
@@ -57,13 +56,6 @@ class TicketListState extends Equatable {
         action: action,
         mutation: TicketListStates.success,
         tickets: tickets,
-      );
-
-  TicketListState withFocus(TicketListEvent action, TicketId focusedId) =>
-      copyWith(
-        action: action,
-        mutation: TicketListStates.focused,
-        focusedId: () => focusedId,
       );
 
   TicketListState failed(TicketListEvent action, Object error) => copyWith(

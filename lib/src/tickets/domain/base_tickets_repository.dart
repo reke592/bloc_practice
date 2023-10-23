@@ -28,6 +28,6 @@ abstract class BaseTicketRepository extends ChangeNotifier {
   Future<Ticket> loadTicketDetails(TicketId id);
   Future<Ticket> createTicket(Ticket data);
   Future<Ticket> updateTicket(Ticket data);
-  Future<List<TicketHistory>> loadTicketHistory(TicketId refId);
+  Future<List<TicketHistory>> loadTicketHistory(TicketId id);
   Future<List<TicketStatus>> loadTicketStatuses();
 }

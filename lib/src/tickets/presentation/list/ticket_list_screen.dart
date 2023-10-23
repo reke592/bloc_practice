@@ -11,6 +11,7 @@ class TicketListScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: const Text('Tickets'),
         leading: BackButton(
           onPressed: () => context.go('/'),
         ),

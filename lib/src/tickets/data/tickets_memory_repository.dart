@@ -66,10 +66,10 @@ class TicketsMemoryRepository extends BaseTicketRepository {
   }
 
   @override
-  Future<List<TicketHistory>> loadTicketHistory(TicketId refId) async {
+  Future<List<TicketHistory>> loadTicketHistory(TicketId id) async {
     return await Future.delayed(const Duration(seconds: 1), () {
-      if (refId.isTemporary) return [];
-      return List<TicketHistory>.from(_history[refId] ?? []);
+      if (id.isTemporary) return [];
+      return List<TicketHistory>.from(_history[id] ?? []);
     });
   }
 
