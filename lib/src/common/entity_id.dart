@@ -1,4 +1,4 @@
-class EntityId<T> {
+abstract class EntityId<T> {
   final T value;
   final bool isTemporary;
 
@@ -6,8 +6,8 @@ class EntityId<T> {
 
   @override
   operator ==(other) {
-    return other is EntityId<T>
-        ? value.hashCode == other.value.hashCode
+    return other.runtimeType == runtimeType
+        ? value.hashCode == (other as EntityId).value.hashCode
         : false;
   }
 
