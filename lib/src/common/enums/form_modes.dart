@@ -1,0 +1,4 @@
+enum FormModes {
+  edit,
+  view,
+}
