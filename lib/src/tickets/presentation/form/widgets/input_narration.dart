@@ -21,6 +21,10 @@ class InputNarration extends StatelessWidget {
           controller: controller,
           minLines: 3,
           maxLines: 3,
+          decoration: const InputDecoration(
+            label: Text('Narration'),
+            border: OutlineInputBorder(),
+          ),
           onChanged: !readOnly
               ? (value) {
                   bloc.add(UpdateNarration(value));

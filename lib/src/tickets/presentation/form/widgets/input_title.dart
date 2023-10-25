@@ -18,6 +18,10 @@ class InputTitle extends StatelessWidget {
         return TextField(
           readOnly: readOnly,
           controller: controller,
+          decoration: const InputDecoration(
+            label: Text('Title'),
+            border: OutlineInputBorder(),
+          ),
           onChanged: !readOnly
               ? (value) {
                   context.read<TicketFormBloc>().add(UpdateTitle(value));

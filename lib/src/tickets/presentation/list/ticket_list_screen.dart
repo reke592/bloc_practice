@@ -1,5 +1,6 @@
 import 'package:bloc_practice/src/tickets/presentation/list/bloc/ticket_list_bloc.dart';
 import 'package:bloc_practice/src/tickets/presentation/list/widgets/button_create.dart';
+import 'package:bloc_practice/src/tickets/presentation/widgets/ticket_number.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -37,8 +38,20 @@ class TicketListScreen extends StatelessWidget {
                   itemCount: state.tickets.length,
                   itemBuilder: (context, index) {
                     return ListTile(
-                      title: Text(state.tickets[index].title),
-                      subtitle: Text(state.tickets[index].narration),
+                      title: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          TicketNumber(id: state.tickets[index].id),
+                          Text(state.tickets[index].title),
+                        ],
+                      ),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(state.tickets[index].client),
+                          Text(state.tickets[index].narration),
+                        ],
+                      ),
                       trailing: Text(state.tickets[index].status),
                       onTap: () => context.goNamed(
                         'view ticket',

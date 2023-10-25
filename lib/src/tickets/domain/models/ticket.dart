@@ -23,6 +23,7 @@ class TicketId extends EntityId<int> {
 @immutable
 class Ticket extends Entity<TicketId> {
   final TicketStates mutation;
+  final String client;
   final String title;
   final String narration;
   final String status;
@@ -34,6 +35,7 @@ class Ticket extends Entity<TicketId> {
   const Ticket({
     required super.id,
     this.mutation = TicketStates.initial,
+    this.client = '',
     this.title = '',
     this.narration = '',
     this.status = '',
@@ -58,6 +60,7 @@ class Ticket extends Entity<TicketId> {
   Ticket copyWith({
     required TicketStates mutation,
     TicketId? id,
+    String? client,
     String? title,
     String? narration,
     String? status,
@@ -66,10 +69,16 @@ class Ticket extends Entity<TicketId> {
       Ticket(
         mutation: mutation,
         id: id ?? this.id,
+        client: client ?? this.client,
         title: title ?? this.title,
         narration: narration ?? this.narration,
         status: status ?? this.status,
         history: history ?? this.history,
+      );
+
+  Ticket setClient(String client) => copyWith(
+        mutation: TicketStates.modified,
+        client: client,
       );
 
   Ticket setTitle(String title) => copyWith(

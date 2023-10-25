@@ -6,7 +6,15 @@ import 'package:bloc_practice/src/tickets/domain/models/ticket_status.dart';
 
 /// for testing purpose
 class TicketsMemoryRepository extends BaseTicketRepository {
-  final List<Ticket> _tickets = [];
+  final List<Ticket> _tickets = [
+    Ticket(
+      id: TicketId(value: 1, isTemporary: false),
+      client: 'Company ABC',
+      title: 'Email notification enhancement',
+      narration: 'sent email queue must have data retention of atleast 30d.',
+      status: 'For Development',
+    )
+  ];
   final Map<TicketId, List<TicketHistory>> _history = {};
   final List<TicketStatus> _statuses = [
     TicketStatus(name: 'Open'),

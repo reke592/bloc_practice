@@ -5,14 +5,11 @@ extension ShimmerEffect on Widget {
   Widget addShimmer(bool value) {
     if (value) {
       return Shimmer.fromColors(
-        baseColor: Colors.grey,
-        highlightColor: Colors.grey.shade100,
-        child: Container(
-          color: Colors.grey.withAlpha(50),
-          child: AbsorbPointer(
-            absorbing: true,
-            child: this,
-          ),
+        baseColor: Colors.transparent,
+        highlightColor: Colors.grey.withOpacity(0.5),
+        child: AbsorbPointer(
+          absorbing: true,
+          child: this,
         ),
       );
     } else {

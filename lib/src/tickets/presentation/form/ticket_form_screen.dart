@@ -9,6 +9,7 @@ import 'package:bloc_practice/src/tickets/presentation/form/widgets/button_save.
 import 'package:bloc_practice/src/tickets/presentation/form/widgets/dropdown_status.dart';
 import 'package:bloc_practice/src/tickets/presentation/form/widgets/input_narration.dart';
 import 'package:bloc_practice/src/tickets/presentation/form/widgets/input_title.dart';
+import 'package:bloc_practice/src/tickets/presentation/widgets/ticket_number.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -54,6 +55,8 @@ class TicketFormScreen extends StatelessWidget {
       builder: (context, state) {
         // print(state.data.status);
         final bloc = context.read<TicketFormBloc>();
+        final isLandscape =
+            MediaQuery.of(context).orientation == Orientation.landscape;
         if (state.mutation == TicketFormStates.initial) {
           bloc
             ..add(LoadDetails(bloc.state.data.id))
@@ -68,14 +71,44 @@ class TicketFormScreen extends StatelessWidget {
             ],
           ),
           body: Card(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(state.data.id.toString()),
-                const InputTitle(),
-                const InputNarration(),
-                const DropdownStatus(),
-              ],
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      TicketNumber(
+                        id: state.data.id,
+                        style: Theme.of(context).textTheme.headlineSmall,
+                      ),
+                      const DropdownStatus(),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  if (isLandscape)
+                    const Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(child: InputTitle()),
+                        SizedBox(width: 10),
+                        Expanded(child: InputNarration()),
+                      ],
+                    ),
+                  if (!isLandscape)
+                    const Expanded(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          InputTitle(),
+                          SizedBox(height: 10),
+                          InputNarration(),
+                        ],
+                      ),
+                    )
+                ],
+              ),
             ),
           ),
         );

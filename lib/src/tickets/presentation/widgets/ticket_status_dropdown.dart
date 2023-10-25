@@ -24,6 +24,8 @@ class TicketStatusDropdown extends StatelessWidget {
         }
         bool isLoading = state.mutation == StatusOptionStates.loading;
         return DropdownButton<String>(
+          underline: Container(),
+          borderRadius: BorderRadius.circular(8),
           value: value?.isEmpty ?? true ? null : value,
           hint: const Text('Ticket Status'),
           items: [
