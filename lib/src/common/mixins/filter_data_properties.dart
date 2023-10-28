@@ -154,28 +154,29 @@ mixin FilterDataProperties<T> on Object {
             .replaceAll('{total}', '$_totalRecords');
   }
 
+  /// returns a method to run combined active tag test
+  @protected
+  bool Function(T record) testActiveTags() {
+    final activeTags = tagOptions.values
+        .where((element) => element.selected.isNotEmpty)
+        .map((e) => e.test);
+    return activeTags.isEmpty
+        ? (T record) => true
+        : (T record) =>
+            activeTags.fold(true, (value, test) => value && test(record));
+  }
+
   /// filtered output
   Stream<T> _filtered() async* {
     final pattern = searchPattern;
-    final activeTags =
-        tagOptions.values.where((element) => element.selected.isNotEmpty);
+    final activeTags = testActiveTags();
     _totalRecords = 0;
     _visibleRecords = 0;
     for (var record in await _snapshot) {
       _totalRecords++;
-      if (activeTags.isEmpty && pattern.hasMatch(forSearch(record))) {
+      if (activeTags(record) && pattern.hasMatch(forSearch(record))) {
         _visibleRecords++;
         yield record;
-      }
-      // combine filters
-      else {
-        for (var filter in activeTags) {
-          if (filter.test(record) && pattern.hasMatch(forSearch(record))) {
-            _visibleRecords++;
-            yield record;
-            break; // tag check
-          }
-        }
       }
     }
   }

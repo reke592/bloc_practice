@@ -38,7 +38,8 @@ dependencies:
   provider: ^6.0.5
   shimmer: ^3.0.0
   chips_choice: ^3.0.1
-
+  url_launcher: ^6.2.1
+  font_awesome_flutter: ^10.6.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -67,7 +68,8 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
+  assets:
+    - resource/meta/practice.json
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 

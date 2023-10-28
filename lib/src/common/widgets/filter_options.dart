@@ -18,9 +18,18 @@ class FilterOptions<T> extends StatefulWidget {
 
 class _FilterOptionsState<T> extends State<FilterOptions<T>> {
   Timer? _debouncer;
+  late final TextEditingController _searchController;
+
+  @override
+  void initState() {
+    _searchController =
+        TextEditingController(text: widget.provider.filterSearchText);
+    super.initState();
+  }
 
   @override
   void dispose() {
+    _searchController.dispose();
     _debouncer?.cancel();
     super.dispose();
   }
@@ -60,6 +69,7 @@ class _FilterOptionsState<T> extends State<FilterOptions<T>> {
     return Column(
       children: [
         TextField(
+          controller: _searchController,
           decoration: InputDecoration(
             label: const Text('Search'),
             hintText: widget.provider.forSearchHint,
