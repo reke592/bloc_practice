@@ -1,3 +1,4 @@
+import 'package:bloc_practice/src/common/enums/bloc_mutations.dart';
 import 'package:bloc_practice/src/common/enums/form_modes.dart';
 import 'package:bloc_practice/src/common/exceptions/form_dirty_exception.dart';
 import 'package:bloc_practice/src/tickets/domain/base_tickets_repository.dart';
@@ -23,6 +24,7 @@ class TicketFormBloc extends Bloc<TicketFormEvent, TicketFormState> {
     on<UpdateTicketStatus>(_onUpdateTicketStatus);
     on<UpdateTitle>(_onUpdateTitle);
     on<UpdateNarration>(_onUpdateNarration);
+    on<TagCustomer>(_onTagCompany);
     on<FormSave>(_onFormSave);
     on<FormClose>(_onFormClose);
     on<FormEdit>(_onFormEdit);
@@ -67,6 +69,10 @@ class TicketFormBloc extends Bloc<TicketFormEvent, TicketFormState> {
 
   _onUpdateNarration(UpdateNarration event, _E emit) {
     emit(state.success(event, state.data.setNarration(event.value)));
+  }
+
+  _onTagCompany(TagCustomer event, _E emit) {
+    emit(state.success(event, state.data.tagCustomer(event.value)));
   }
 
   Future<void> _onFormSave(FormSave event, _E emit) async {

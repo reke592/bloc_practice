@@ -2,25 +2,26 @@ import 'dart:async';
 
 import 'package:bloc_practice/src/common/enums/bloc_mutations.dart';
 import 'package:bloc_practice/src/tickets/domain/base_tickets_repository.dart';
-import 'package:bloc_practice/src/tickets/domain/models/ticket_status.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 
-part 'status_option_state.dart';
+part 'customer_option_state.dart';
 
-class StatusOptionCubit extends Cubit<StatusOptionState> {
+class CustomerOptionCubit extends Cubit<CustomerOptionState> {
   final BaseTicketRepository _repo;
-  late final StreamSubscription<List<TicketStatus>> _loadedTicketStatus;
+  late final StreamSubscription<List<String>> _loadedCustomers;
 
-  StatusOptionCubit(BaseTicketRepository repo)
+  CustomerOptionCubit(BaseTicketRepository repo)
       : _repo = repo,
-        super(const StatusOptionState()) {
-    _loadedTicketStatus = repo.getLoadedTicketStatus().listen(_onSuccess);
+        super(const CustomerOptionState()) {
+    _loadedCustomers = repo.getLoadedCustomers().listen((event) {
+      _onSuccess(event);
+    });
   }
 
   @override
   Future<void> close() async {
-    await _loadedTicketStatus.cancel();
+    await _loadedCustomers.cancel();
     return super.close();
   }
 
@@ -29,10 +30,10 @@ class StatusOptionCubit extends Cubit<StatusOptionState> {
 
     emit(state.copyWith(mutation: BlocMutation.loading));
 
-    await _repo.loadTicketStatuses().then(_onSuccess).onError(_handleError);
+    await _repo.loadCustomers().then(_onSuccess).onError(_handleError);
   }
 
-  void _onSuccess(List<TicketStatus> options) {
+  void _onSuccess(List<String> options) {
     emit(
       state.copyWith(
         mutation: BlocMutation.success,

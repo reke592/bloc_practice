@@ -1,0 +1,36 @@
+name: flutter-build-web
+run-name: ${{ github.actor }} is running flutter build web
+on:
+  push:
+    branches:
+      - main
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.13.x'
+          channel: 'stable'
+      - name: Test and Build web
+        run: |
+            flutter pub get
+            flutter test
+            flutter build web --release --base-href "/practice/flutter_bloc/"
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: web
+          path: build/web
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          repository-name: reke592/reke592.github.io
+          branch: main
+          token: ${{ secrets.DEPLOY_KEY }}
+          folder: build/web
+          target-folder: practice/flutter_bloc
+          #commit-message: ${{ github.event.head_commit.message }}

@@ -1,5 +1,5 @@
 import 'package:bloc_practice/src/common/enums/form_modes.dart';
-import 'package:bloc_practice/src/common/extensions.dart';
+import 'package:bloc_practice/src/common/extensions/shimmer_effect_on_widget.dart';
 import 'package:bloc_practice/src/tickets/presentation/form/bloc/ticket_form_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -19,18 +19,15 @@ class InputNarration extends StatelessWidget {
         return TextField(
           readOnly: readOnly,
           controller: controller,
-          minLines: 3,
-          maxLines: 3,
-          decoration: const InputDecoration(
-            label: Text('Narration'),
-            border: OutlineInputBorder(),
-          ),
+          minLines: 5,
+          maxLines: 5,
+          decoration: const InputDecoration(label: Text('Narration')),
           onChanged: !readOnly
               ? (value) {
                   bloc.add(UpdateNarration(value));
                 }
               : null,
-        ).addShimmer(state.mutation == TicketFormStates.loading);
+        ).addShimmer(state.isLoading);
       },
     );
   }

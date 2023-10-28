@@ -1,11 +1,11 @@
-part of 'status_option_cubit.dart';
+part of 'customer_option_cubit.dart';
 
-class StatusOptionState extends Equatable {
+class CustomerOptionState extends Equatable {
   final BlocMutation mutation;
-  final List<TicketStatus> options;
+  final List<String> options;
   final Object? error;
 
-  const StatusOptionState({
+  const CustomerOptionState({
     this.mutation = BlocMutation.initial,
     this.options = const [],
     this.error,
@@ -16,12 +16,12 @@ class StatusOptionState extends Equatable {
   bool get isSuccess => mutation == BlocMutation.success;
   bool get isError => mutation == BlocMutation.error;
 
-  StatusOptionState copyWith({
+  CustomerOptionState copyWith({
     required BlocMutation mutation,
-    List<TicketStatus>? options,
+    List<String>? options,
     Object? Function()? error,
   }) =>
-      StatusOptionState(
+      CustomerOptionState(
         mutation: mutation,
         options: options ?? this.options,
         error: error != null ? error() : this.error,

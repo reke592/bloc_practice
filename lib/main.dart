@@ -1,8 +1,24 @@
+import 'dart:ui';
+
 import 'package:bloc_practice/src/router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'src/common/utils/app_observer.dart';
+import 'src/common/observers/app_observer.dart';
+
+class CustomScroll extends ScrollBehavior {
+  @override
+  Set<PointerDeviceKind> get dragDevices => <PointerDeviceKind>{
+        PointerDeviceKind.touch,
+        PointerDeviceKind.stylus,
+        PointerDeviceKind.invertedStylus,
+        PointerDeviceKind.trackpad,
+        PointerDeviceKind.mouse,
+        // The VoiceAccess sends pointer events with unknown type when scrolling
+        // scrollables.
+        PointerDeviceKind.unknown,
+      };
+}
 
 void main() {
   Bloc.observer = AppObserver();
@@ -23,10 +39,21 @@ class MyApp extends StatelessWidget {
     return MaterialApp.router(
       title: 'Bloc Practice',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        // colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueGrey),
         useMaterial3: true,
+        inputDecorationTheme: const InputDecorationTheme(
+          border: OutlineInputBorder(),
+          isDense: true,
+          alignLabelWithHint: true,
+        ),
+        dropdownMenuTheme: const DropdownMenuThemeData(
+          inputDecorationTheme: InputDecorationTheme(
+            isDense: true,
+          ),
+        ),
       ),
       routerConfig: routerConfig,
+      scrollBehavior: CustomScroll(),
     );
   }
 }

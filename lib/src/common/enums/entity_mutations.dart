@@ -1,0 +1,4 @@
+enum EntityMutation {
+  initial,
+  modified,
+}

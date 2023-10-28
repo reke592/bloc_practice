@@ -1,4 +1,4 @@
-import 'package:bloc_practice/src/common/extensions.dart';
+import 'package:bloc_practice/src/common/extensions/shimmer_effect_on_widget.dart';
 import 'package:bloc_practice/src/tickets/presentation/form/bloc/ticket_form_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,7 +16,7 @@ class ButtonEdit extends StatelessWidget {
             context.read<TicketFormBloc>().add(FormEdit());
           },
           child: const Text('Edit'),
-        ).addShimmer(state.mutation == TicketFormStates.loading);
+        ).addShimmer(state.isLoading);
       },
     );
   }

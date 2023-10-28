@@ -1,5 +1,5 @@
 import 'package:bloc_practice/src/common/enums/form_modes.dart';
-import 'package:bloc_practice/src/common/extensions.dart';
+import 'package:bloc_practice/src/common/extensions/shimmer_effect_on_widget.dart';
 import 'package:bloc_practice/src/tickets/presentation/form/bloc/ticket_form_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,16 +18,15 @@ class InputTitle extends StatelessWidget {
         return TextField(
           readOnly: readOnly,
           controller: controller,
-          decoration: const InputDecoration(
-            label: Text('Title'),
-            border: OutlineInputBorder(),
-          ),
+          minLines: 1,
+          maxLines: 3,
+          decoration: const InputDecoration(label: Text('Title')),
           onChanged: !readOnly
               ? (value) {
                   context.read<TicketFormBloc>().add(UpdateTitle(value));
                 }
               : null,
-        ).addShimmer(state.mutation == TicketFormStates.loading);
+        ).addShimmer(state.isLoading);
       },
     );
   }

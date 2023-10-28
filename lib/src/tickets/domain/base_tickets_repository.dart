@@ -11,15 +11,23 @@ import 'models/ticket.dart';
 abstract class BaseTicketRepository extends ChangeNotifier {
   final createdTicket = PublishSubject<Ticket>();
   final updatedTicket = PublishSubject<Ticket>();
+  final loadedTicketStatus = BehaviorSubject<List<TicketStatus>>();
+  final loadedCustomers = BehaviorSubject<List<String>>();
 
   Stream<Ticket> getCreated() => createdTicket.stream.asBroadcastStream();
   Stream<Ticket> getUpdated() => updatedTicket.stream.asBroadcastStream();
+  Stream<List<TicketStatus>> getLoadedTicketStatus() =>
+      loadedTicketStatus.stream.asBroadcastStream();
+  Stream<List<String>> getLoadedCustomers() =>
+      loadedCustomers.stream.asBroadcastStream();
 
   @mustCallSuper
   @override
   FutureOr<void> dispose() async {
     await createdTicket.close();
     await updatedTicket.close();
+    await loadedTicketStatus.close();
+    await loadedCustomers.close();
     super.dispose();
     log('$runtimeType disposed');
   }
@@ -30,4 +38,5 @@ abstract class BaseTicketRepository extends ChangeNotifier {
   Future<Ticket> updateTicket(Ticket data);
   Future<List<TicketHistory>> loadTicketHistory(TicketId id);
   Future<List<TicketStatus>> loadTicketStatuses();
+  Future<List<String>> loadCustomers();
 }

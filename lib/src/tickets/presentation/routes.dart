@@ -1,8 +1,10 @@
 import 'package:bloc_practice/src/common/enums/form_modes.dart';
+import 'package:bloc_practice/src/common/observers/previous_route_observer.dart';
 import 'package:bloc_practice/src/common/type_defs.dart';
 import 'package:bloc_practice/src/tickets/data/tickets_memory_repository.dart';
 import 'package:bloc_practice/src/tickets/domain/base_tickets_repository.dart';
 import 'package:bloc_practice/src/tickets/domain/models/ticket.dart';
+import 'package:bloc_practice/src/tickets/presentation/cubit/customer_option_cubit.dart';
 import 'package:bloc_practice/src/tickets/presentation/cubit/status_option_cubit.dart';
 import 'package:bloc_practice/src/tickets/presentation/form/bloc/ticket_form_bloc.dart';
 import 'package:bloc_practice/src/tickets/presentation/form/ticket_form_screen.dart';
@@ -40,19 +42,29 @@ ShellRoute ticketsRouteConfiguration({
   return ShellRoute(
     parentNavigatorKey: rootNavigator,
     navigatorKey: shellKey,
+    observers: [PreviousRouteObserver()],
     builder: (context, state, child) => MultiProvider(
       providers: [
         ChangeNotifierProvider<BaseTicketRepository>(
           create: (_) => TicketsMemoryRepository(),
         ),
         BlocProvider(
+          lazy: false,
           create: (context) => StatusOptionCubit(
             context.read<BaseTicketRepository>(),
           ),
         ),
         BlocProvider(
-          create: (context) => TicketListBloc(
+          lazy: false,
+          create: (context) => CustomerOptionCubit(
             context.read<BaseTicketRepository>(),
+          ),
+        ),
+        BlocProvider(
+          create: (context) => TicketListBloc(
+            context.read<BaseTicketRepository>()
+              ..loadCustomers()
+              ..loadTicketStatuses(),
           )..add(LoadList()),
         ),
       ],

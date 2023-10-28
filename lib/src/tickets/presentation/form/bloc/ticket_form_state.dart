@@ -1,25 +1,18 @@
 part of 'ticket_form_bloc.dart';
 
-enum TicketFormStates {
-  initial,
-  loading,
-  success,
-  error,
-}
-
 class TicketFormState extends Equatable {
   final FormModes mode;
   final Ticket data;
   final TicketFormEvent? action;
   final Object? error;
-  final TicketFormStates mutation;
+  final BlocMutation mutation;
 
   const TicketFormState({
     required this.mode,
     required this.data,
     this.action,
     this.error,
-    this.mutation = TicketFormStates.initial,
+    this.mutation = BlocMutation.initial,
   });
 
   @override
@@ -31,9 +24,14 @@ class TicketFormState extends Equatable {
         mutation,
       ];
 
+  bool get isInitial => mutation == BlocMutation.initial;
+  bool get isLoading => mutation == BlocMutation.loading;
+  bool get isSuccess => mutation == BlocMutation.success;
+  bool get isError => mutation == BlocMutation.error;
+
   TicketFormState copyWith({
     required TicketFormEvent action,
-    required TicketFormStates mutation,
+    required BlocMutation mutation,
     Ticket? data,
     Object? Function()? error,
     FormModes? mode,
@@ -46,26 +44,29 @@ class TicketFormState extends Equatable {
         mode: mode ?? this.mode,
       );
 
+  /// common
   TicketFormState loading(TicketFormEvent action) => copyWith(
         action: action,
-        mutation: TicketFormStates.loading,
+        mutation: BlocMutation.loading,
       );
 
+  /// common
   TicketFormState success(TicketFormEvent action, Ticket data) => copyWith(
         action: action,
-        mutation: TicketFormStates.success,
+        mutation: BlocMutation.success,
         data: data,
       );
 
+  /// common
   TicketFormState failed(TicketFormEvent action, Object error) => copyWith(
         action: action,
-        mutation: TicketFormStates.error,
+        mutation: BlocMutation.error,
         error: () => error,
       );
 
   TicketFormState withMode(TicketFormEvent action, FormModes mode) => copyWith(
         action: action,
-        mutation: TicketFormStates.success,
+        mutation: BlocMutation.success,
         mode: mode,
       );
 }

@@ -42,6 +42,13 @@ class UpdateNarration extends TicketFormEvent {
   List<Object> get props => [value];
 }
 
+class TagCustomer extends TicketFormEvent {
+  final String value;
+  const TagCustomer(this.value);
+  @override
+  List<Object> get props => [value];
+}
+
 class FormClose extends TicketFormEvent {
   final bool discard;
   const FormClose([this.discard = false]);

@@ -1,12 +1,8 @@
 import 'package:bloc_practice/src/common/entity.dart';
 import 'package:bloc_practice/src/common/entity_id.dart';
+import 'package:bloc_practice/src/common/enums/entity_mutations.dart';
 import 'package:bloc_practice/src/tickets/domain/models/ticket_history.dart';
 import 'package:flutter/widgets.dart';
-
-enum TicketStates {
-  initial,
-  modified,
-}
 
 class TicketId extends EntityId<int> {
   TicketId({
@@ -22,8 +18,7 @@ class TicketId extends EntityId<int> {
 
 @immutable
 class Ticket extends Entity<TicketId> {
-  final TicketStates mutation;
-  final String client;
+  final String customer;
   final String title;
   final String narration;
   final String status;
@@ -34,8 +29,8 @@ class Ticket extends Entity<TicketId> {
 
   const Ticket({
     required super.id,
-    this.mutation = TicketStates.initial,
-    this.client = '',
+    super.mutation = EntityMutation.initial,
+    this.customer = '',
     this.title = '',
     this.narration = '',
     this.status = '',
@@ -55,44 +50,53 @@ class Ticket extends Entity<TicketId> {
       ];
 
   @override
-  bool get isModified => mutation == TicketStates.modified;
+  bool get isModified => mutation == EntityMutation.modified;
 
   Ticket copyWith({
-    required TicketStates mutation,
+    required EntityMutation mutation,
     TicketId? id,
-    String? client,
+    String? customer,
     String? title,
     String? narration,
     String? status,
+    String? category,
+    DateTime? created,
     List<TicketHistory>? history,
   }) =>
       Ticket(
         mutation: mutation,
         id: id ?? this.id,
-        client: client ?? this.client,
+        customer: customer ?? this.customer,
         title: title ?? this.title,
         narration: narration ?? this.narration,
         status: status ?? this.status,
+        category: category ?? this.category,
+        created: created ?? this.created,
         history: history ?? this.history,
       );
 
   Ticket setClient(String client) => copyWith(
-        mutation: TicketStates.modified,
-        client: client,
+        mutation: EntityMutation.modified,
+        customer: client,
       );
 
   Ticket setTitle(String title) => copyWith(
-        mutation: TicketStates.modified,
+        mutation: EntityMutation.modified,
         title: title,
       );
 
   Ticket setNarration(String narration) => copyWith(
-        mutation: TicketStates.modified,
+        mutation: EntityMutation.modified,
         narration: narration,
       );
 
+  Ticket tagCustomer(String customer) => copyWith(
+        mutation: EntityMutation.modified,
+        customer: customer,
+      );
+
   Ticket setStatus(String status) => copyWith(
-        mutation: TicketStates.modified,
+        mutation: EntityMutation.modified,
         status: status,
       );
 
@@ -102,7 +106,7 @@ class Ticket extends Entity<TicketId> {
       );
 
   Ticket addHistory(TicketHistory value) => copyWith(
-        mutation: TicketStates.modified,
+        mutation: EntityMutation.modified,
         history: List<TicketHistory>.from(history)..add(value),
       );
 
@@ -116,7 +120,7 @@ class Ticket extends Entity<TicketId> {
         list[index] = value.delete();
       }
       return copyWith(
-        mutation: TicketStates.modified,
+        mutation: EntityMutation.modified,
         history: list,
       );
     } else {

@@ -1,10 +1,6 @@
 import 'package:bloc_practice/src/common/entity.dart';
 import 'package:bloc_practice/src/common/entity_id.dart';
-
-enum TicketHistoryStates {
-  initial,
-  modified,
-}
+import 'package:bloc_practice/src/common/enums/entity_mutations.dart';
 
 class TicketHistoryId extends EntityId<int> {
   TicketHistoryId({
@@ -14,7 +10,6 @@ class TicketHistoryId extends EntityId<int> {
 }
 
 class TicketHistory extends Entity<TicketHistoryId> {
-  final TicketHistoryStates mutation;
   final String action;
   final String createdBy;
   final String assignedTo;
@@ -22,7 +17,7 @@ class TicketHistory extends Entity<TicketHistoryId> {
   final bool deleted;
 
   const TicketHistory({
-    this.mutation = TicketHistoryStates.initial,
+    super.mutation = EntityMutation.initial,
     required super.id,
     required this.action,
     required this.createdBy,
@@ -42,11 +37,8 @@ class TicketHistory extends Entity<TicketHistoryId> {
         mutation,
       ];
 
-  @override
-  bool get isModified => mutation == TicketHistoryStates.modified;
-
   TicketHistory copyWith({
-    required TicketHistoryStates mutation,
+    required EntityMutation mutation,
     String? action,
     String? createdBy,
     String? assignedTo,
@@ -64,17 +56,17 @@ class TicketHistory extends Entity<TicketHistoryId> {
       );
 
   TicketHistory delete() => copyWith(
-        mutation: TicketHistoryStates.modified,
+        mutation: EntityMutation.modified,
         deleted: true,
       );
 
   TicketHistory setAction(String action) => copyWith(
-        mutation: TicketHistoryStates.modified,
+        mutation: EntityMutation.modified,
         action: action,
       );
 
   TicketHistory assignTo(String assignedTo) => copyWith(
-        mutation: TicketHistoryStates.modified,
+        mutation: EntityMutation.modified,
         assignedTo: assignedTo,
       );
 }

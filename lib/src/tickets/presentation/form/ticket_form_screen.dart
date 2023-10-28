@@ -6,9 +6,11 @@ import 'package:bloc_practice/src/tickets/presentation/form/bloc/ticket_form_blo
 import 'package:bloc_practice/src/tickets/presentation/form/widgets/button_close.dart';
 import 'package:bloc_practice/src/tickets/presentation/form/widgets/button_edit.dart';
 import 'package:bloc_practice/src/tickets/presentation/form/widgets/button_save.dart';
+import 'package:bloc_practice/src/tickets/presentation/form/widgets/dropdown_customers.dart';
 import 'package:bloc_practice/src/tickets/presentation/form/widgets/dropdown_status.dart';
 import 'package:bloc_practice/src/tickets/presentation/form/widgets/input_narration.dart';
 import 'package:bloc_practice/src/tickets/presentation/form/widgets/input_title.dart';
+import 'package:bloc_practice/src/common/widgets/previous_route_name.dart';
 import 'package:bloc_practice/src/tickets/presentation/widgets/ticket_number.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -23,13 +25,13 @@ class TicketFormScreen extends StatelessWidget {
       listener: (context, state) async {
         final bloc = context.read<TicketFormBloc>();
         // on success
-        if (state.mutation == TicketFormStates.success) {
+        if (state.isSuccess) {
           if (state.action is FormClose || state.action is FormSave) {
             context.goNamed('ticket list');
           }
         }
         // on error
-        else if (state.mutation == TicketFormStates.error) {
+        else if (state.isError) {
           // when form is dirty
           if (state.error is FormDirtyException) {
             return MessageDialogs.confirm(
@@ -52,12 +54,13 @@ class TicketFormScreen extends StatelessWidget {
           }
         }
       },
+      buildWhen: (_, current) =>
+          current.action is LoadDetails || current.action is FormEdit,
       builder: (context, state) {
-        // print(state.data.status);
         final bloc = context.read<TicketFormBloc>();
         final isLandscape =
-            MediaQuery.of(context).orientation == Orientation.landscape;
-        if (state.mutation == TicketFormStates.initial) {
+            MediaQuery.orientationOf(context) == Orientation.landscape;
+        if (state.isInitial) {
           bloc
             ..add(LoadDetails(bloc.state.data.id))
             ..add(LoadTicketHistory(bloc.state.data.id));
@@ -65,6 +68,13 @@ class TicketFormScreen extends StatelessWidget {
         return Scaffold(
           appBar: AppBar(
             leading: const ButtonClose(),
+            title: const Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Ticket Form'),
+                PreviousRouteName(),
+              ],
+            ),
             actions: [
               if (state.mode == FormModes.edit) const ButtonSave(),
               if (state.mode == FormModes.view) const ButtonEdit(),
@@ -87,21 +97,35 @@ class TicketFormScreen extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 10),
+                  // web and tablet
                   if (isLandscape)
                     const Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Expanded(child: InputTitle()),
+                        SizedBox(width: 10),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              InputTitle(),
+                              DropdownCustomers(),
+                            ],
+                          ),
+                        ),
                         SizedBox(width: 10),
                         Expanded(child: InputNarration()),
                       ],
                     ),
+                  // mobile
                   if (!isLandscape)
                     const Expanded(
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           InputTitle(),
+                          SizedBox(height: 10),
+                          DropdownCustomers(),
                           SizedBox(height: 10),
                           InputNarration(),
                         ],

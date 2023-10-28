@@ -17,3 +17,8 @@ class UpdatedTicket extends TicketListEvent {
   final Ticket data;
   const UpdatedTicket(this.data);
 }
+
+class FilteredList extends TicketListEvent {
+  final List<Ticket> data;
+  const FilteredList(this.data);
+}

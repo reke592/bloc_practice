@@ -1,3 +1,4 @@
+import 'package:bloc_practice/src/common/enums/entity_mutations.dart';
 import 'package:bloc_practice/src/common/exceptions/record_not_found.dart';
 import 'package:bloc_practice/src/tickets/domain/base_tickets_repository.dart';
 import 'package:bloc_practice/src/tickets/domain/models/ticket.dart';
@@ -6,14 +7,39 @@ import 'package:bloc_practice/src/tickets/domain/models/ticket_status.dart';
 
 /// for testing purpose
 class TicketsMemoryRepository extends BaseTicketRepository {
+  final List<String> _companies = [
+    'ABC Inc.',
+    'DEF Alliance',
+    'GHI Machineries',
+    'JK Laboratories',
+    'MiNO Corp.',
+  ];
   final List<Ticket> _tickets = [
     Ticket(
       id: TicketId(value: 1, isTemporary: false),
-      client: 'Company ABC',
+      customer: 'ABC Inc.',
       title: 'Email notification enhancement',
       narration: 'sent email queue must have data retention of atleast 30d.',
       status: 'For Development',
-    )
+      created: DateTime.parse('2023-10-01'),
+    ),
+    Ticket(
+      id: TicketId(value: 2, isTemporary: false),
+      customer: 'MiNO Corp.',
+      title: 'Logs integration',
+      narration: 'Legacy system logs to roll-up in new system',
+      status: 'On Testing',
+      created: DateTime.parse('2023-10-02'),
+    ),
+    Ticket(
+      id: TicketId(value: 3, isTemporary: false),
+      customer: 'GHI Machineries',
+      title: 'Additional analytics chart for Manpower Allocation',
+      narration:
+          'Request for additional analytics chart to balance Manpower Allocation in multiple site locations',
+      status: 'For Verification',
+      created: DateTime.parse('2023-10-03'),
+    ),
   ];
   final Map<TicketId, List<TicketHistory>> _history = {};
   final List<TicketStatus> _statuses = [
@@ -40,11 +66,12 @@ class TicketsMemoryRepository extends BaseTicketRepository {
   Future<Ticket> createTicket(Ticket data) async {
     return await Future.delayed(const Duration(seconds: 1), () {
       final record = data.copyWith(
-        mutation: TicketStates.initial,
+        mutation: EntityMutation.initial,
         id: TicketId(
           value: _tickets.length + 1,
           isTemporary: false,
         ),
+        created: DateTime.now(),
       );
       _tickets.add(record);
       return record;
@@ -66,7 +93,7 @@ class TicketsMemoryRepository extends BaseTicketRepository {
       () {
         final index = _tickets.indexWhere((record) => record.id == data.id);
         if (index < 0) throw Exception('Not found');
-        final updated = data.copyWith(mutation: TicketStates.initial);
+        final updated = data.copyWith(mutation: EntityMutation.initial);
         _tickets[index] = updated;
         return updated;
       },
@@ -85,7 +112,11 @@ class TicketsMemoryRepository extends BaseTicketRepository {
   Future<List<TicketStatus>> loadTicketStatuses() async {
     return await Future.delayed(
       const Duration(seconds: 1),
-      () => List<TicketStatus>.from(_statuses),
+      () {
+        final result = List<TicketStatus>.from(_statuses);
+        loadedTicketStatus.add(result);
+        return result;
+      },
     );
   }
 
@@ -99,6 +130,18 @@ class TicketsMemoryRepository extends BaseTicketRepository {
         } catch (_) {
           throw RecordNotFoundException();
         }
+      },
+    );
+  }
+
+  @override
+  Future<List<String>> loadCustomers() async {
+    return await Future.delayed(
+      const Duration(seconds: 1),
+      () {
+        final results = List<String>.from(_companies);
+        loadedCustomers.add(results);
+        return results;
       },
     );
   }
