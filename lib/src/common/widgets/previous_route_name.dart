@@ -11,6 +11,7 @@ class PreviousRouteName extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final name = PreviousRouteObserver.value?.settings.name;
+    print(PreviousRouteObserver.value);
     return name != null
         ? Text(
             'Back to $name',

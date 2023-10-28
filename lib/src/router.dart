@@ -17,6 +17,7 @@ final router = GoRouter(
   routes: [
     GoRoute(
       path: '/',
+      name: 'app list',
       builder: (context, state) => Scaffold(
         body: Center(
           child: FutureBuilder(
@@ -36,6 +37,7 @@ final router = GoRouter(
                         children: [
                           ElevatedButton.icon(
                             onPressed: () {
+                              // when moving to a shell route we need to use goNamed
                               context.goNamed(meta['initialRouteName']);
                             },
                             icon: const FaIcon(FontAwesomeIcons.play),

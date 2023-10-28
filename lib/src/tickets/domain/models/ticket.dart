@@ -5,7 +5,7 @@ import 'package:bloc_practice/src/tickets/domain/models/ticket_history.dart';
 import 'package:flutter/widgets.dart';
 
 class TicketId extends EntityId<int> {
-  TicketId({
+  const TicketId({
     required super.value,
     required super.isTemporary,
   });

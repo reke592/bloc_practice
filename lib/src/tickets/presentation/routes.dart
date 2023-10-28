@@ -77,8 +77,9 @@ ShellRoute ticketsRouteConfiguration({
         parentNavigatorKey: shellKey,
         name: 'ticket list',
         path: root,
-        pageBuilder: (context, state) => const NoTransitionPage(
-          child: TicketListScreen(),
+        pageBuilder: (context, state) => NoTransitionPage(
+          name: state.name,
+          child: const TicketListScreen(),
         ),
       ),
       GoRoute(
@@ -86,32 +87,44 @@ ShellRoute ticketsRouteConfiguration({
         name: 'edit ticket',
         path: '$root/:id/edit',
         redirect: invalidId(root),
-        pageBuilder: (context, state) => NoTransitionPage(
-          child: BlocProvider(
-            create: (context) => TicketFormBloc(
-              repo: context.read<BaseTicketRepository>(),
-              mode: FormModes.edit,
-              id: _idFromRouter(context, state),
+        pageBuilder: (context, state) {
+          final id = _idFromRouter(context, state);
+          return NoTransitionPage(
+            name: state.name,
+            child: BlocProvider(
+              create: (context) => TicketFormBloc(
+                repo: context.read<BaseTicketRepository>(),
+                mode: FormModes.edit,
+                id: id,
+              )
+                ..add(LoadDetails(id))
+                ..add(LoadTicketHistory(id)),
+              child: const TicketFormScreen(),
             ),
-            child: const TicketFormScreen(),
-          ),
-        ),
+          );
+        },
       ),
       GoRoute(
         parentNavigatorKey: shellKey,
         name: 'view ticket',
         path: '$root/:id/view',
         redirect: invalidId(root),
-        pageBuilder: (context, state) => NoTransitionPage(
-          child: BlocProvider(
-            create: (context) => TicketFormBloc(
-              repo: context.read<BaseTicketRepository>(),
-              mode: FormModes.view,
-              id: _idFromRouter(context, state),
+        pageBuilder: (context, state) {
+          final id = _idFromRouter(context, state);
+          return NoTransitionPage(
+            name: state.name,
+            child: BlocProvider(
+              create: (context) => TicketFormBloc(
+                repo: context.read<BaseTicketRepository>(),
+                mode: FormModes.view,
+                id: _idFromRouter(context, state),
+              )
+                ..add(LoadDetails(id))
+                ..add(LoadTicketHistory(id)),
+              child: const TicketFormScreen(),
             ),
-            child: const TicketFormScreen(),
-          ),
-        ),
+          );
+        },
       ),
     ],
   );

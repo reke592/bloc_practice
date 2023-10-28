@@ -20,7 +20,12 @@ class TicketFormBloc extends Bloc<TicketFormEvent, TicketFormState> {
     required FormModes mode,
     required TicketId id,
   })  : _repo = repo,
-        super(TicketFormState(mode: mode, data: Ticket(id: id))) {
+        super(TicketFormState(
+          mode: mode,
+          data: Ticket(id: id),
+          mutation:
+              id.isTemporary ? BlocMutation.initial : BlocMutation.loading,
+        )) {
     on<UpdateTicketStatus>(_onUpdateTicketStatus);
     on<UpdateTitle>(_onUpdateTitle);
     on<UpdateNarration>(_onUpdateNarration);

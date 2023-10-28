@@ -9,7 +9,8 @@ class ButtonSave extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<TicketFormBloc, TicketFormState>(
-      buildWhen: (_, current) => current.action is FormSave,
+      buildWhen: (_, current) =>
+          current.action is LoadDetails || current.action is FormSave,
       builder: (context, state) {
         return ElevatedButton(
           onPressed: () {

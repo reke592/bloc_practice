@@ -16,7 +16,7 @@ class TicketsMemoryRepository extends BaseTicketRepository {
   ];
   final List<Ticket> _tickets = [
     Ticket(
-      id: TicketId(value: 1, isTemporary: false),
+      id: const TicketId(value: 1, isTemporary: false),
       customer: 'ABC Inc.',
       title: 'Email notification enhancement',
       narration: 'sent email queue must have data retention of atleast 30d.',
@@ -24,7 +24,7 @@ class TicketsMemoryRepository extends BaseTicketRepository {
       created: DateTime.parse('2023-10-01'),
     ),
     Ticket(
-      id: TicketId(value: 2, isTemporary: false),
+      id: const TicketId(value: 2, isTemporary: false),
       customer: 'MiNO Corp.',
       title: 'Logs integration',
       narration: 'Legacy system logs to roll-up in new system',
@@ -32,7 +32,7 @@ class TicketsMemoryRepository extends BaseTicketRepository {
       created: DateTime.parse('2023-10-02'),
     ),
     Ticket(
-      id: TicketId(value: 3, isTemporary: false),
+      id: const TicketId(value: 3, isTemporary: false),
       customer: 'GHI Machineries',
       title: 'Additional analytics chart for Manpower Allocation',
       narration:
@@ -81,7 +81,7 @@ class TicketsMemoryRepository extends BaseTicketRepository {
   @override
   Future<List<Ticket>> loadTickets() async {
     return await Future.delayed(
-      const Duration(seconds: 1),
+      const Duration(milliseconds: 1500),
       () => List<Ticket>.from(_tickets),
     );
   }

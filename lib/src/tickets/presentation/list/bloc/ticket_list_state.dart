@@ -1,6 +1,6 @@
 part of 'ticket_list_bloc.dart';
 
-enum TicketListStates {
+enum BlocMutation {
   initial,
   loading,
   success,
@@ -12,15 +12,20 @@ class TicketListState extends Equatable {
   final List<Ticket> tickets;
   final TicketId? focusedId;
   final Object? error;
-  final TicketListStates mutation;
+  final BlocMutation mutation;
 
   const TicketListState({
     this.action,
     this.tickets = const [],
     this.focusedId,
     this.error,
-    this.mutation = TicketListStates.initial,
+    this.mutation = BlocMutation.initial,
   });
+
+  bool get isInitial => mutation == BlocMutation.initial;
+  bool get isLoading => mutation == BlocMutation.loading;
+  bool get isSuccess => mutation == BlocMutation.success;
+  bool get isError => mutation == BlocMutation.error;
 
   @override
   List<Object?> get props => [
@@ -33,7 +38,7 @@ class TicketListState extends Equatable {
 
   TicketListState copyWith({
     required TicketListEvent action,
-    required TicketListStates mutation,
+    required BlocMutation mutation,
     List<Ticket>? tickets,
     TicketId? Function()? focusedId,
     Object? Function()? error,
@@ -48,19 +53,19 @@ class TicketListState extends Equatable {
 
   TicketListState loading(TicketListEvent action) => copyWith(
         action: action,
-        mutation: TicketListStates.loading,
+        mutation: BlocMutation.loading,
       );
 
   TicketListState success(TicketListEvent action, List<Ticket> tickets) =>
       copyWith(
         action: action,
-        mutation: TicketListStates.success,
+        mutation: BlocMutation.success,
         tickets: tickets,
       );
 
   TicketListState failed(TicketListEvent action, Object error) => copyWith(
         action: action,
-        mutation: TicketListStates.error,
+        mutation: BlocMutation.error,
         error: () => error,
       );
 }

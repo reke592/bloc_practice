@@ -2,7 +2,7 @@ abstract class EntityId<T> {
   final T value;
   final bool isTemporary;
 
-  EntityId({required this.value, required this.isTemporary});
+  const EntityId({required this.value, required this.isTemporary});
 
   @override
   operator ==(other) {
