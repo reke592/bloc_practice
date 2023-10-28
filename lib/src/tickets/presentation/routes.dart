@@ -43,52 +43,58 @@ ShellRoute ticketsRouteConfiguration({
     parentNavigatorKey: rootNavigator,
     navigatorKey: shellKey,
     observers: [PreviousRouteObserver()],
-    builder: (context, state, child) => MultiProvider(
-      providers: [
-        ChangeNotifierProvider<BaseTicketRepository>(
-          create: (_) => TicketsMemoryRepository(),
-        ),
-        BlocProvider(
-          lazy: false,
-          create: (context) => StatusOptionCubit(
-            context.read<BaseTicketRepository>(),
+    pageBuilder: (context, state, child) => NoTransitionPage(
+      child: MultiProvider(
+        providers: [
+          ChangeNotifierProvider<BaseTicketRepository>(
+            create: (_) => TicketsMemoryRepository(),
           ),
-        ),
-        BlocProvider(
-          lazy: false,
-          create: (context) => CustomerOptionCubit(
-            context.read<BaseTicketRepository>(),
+          BlocProvider(
+            lazy: false,
+            create: (context) => StatusOptionCubit(
+              context.read<BaseTicketRepository>(),
+            ),
           ),
-        ),
-        BlocProvider(
-          create: (context) => TicketListBloc(
-            context.read<BaseTicketRepository>()
-              ..loadCustomers()
-              ..loadTicketStatuses(),
-          )..add(LoadList()),
-        ),
-      ],
-      child: child,
+          BlocProvider(
+            lazy: false,
+            create: (context) => CustomerOptionCubit(
+              context.read<BaseTicketRepository>(),
+            ),
+          ),
+          BlocProvider(
+            create: (context) => TicketListBloc(
+              context.read<BaseTicketRepository>()
+                ..loadCustomers()
+                ..loadTicketStatuses(),
+            )..add(LoadList()),
+          ),
+        ],
+        child: child,
+      ),
     ),
     routes: [
       GoRoute(
         parentNavigatorKey: shellKey,
         name: 'ticket list',
         path: root,
-        builder: (context, state) => const TicketListScreen(),
+        pageBuilder: (context, state) => const NoTransitionPage(
+          child: TicketListScreen(),
+        ),
       ),
       GoRoute(
         parentNavigatorKey: shellKey,
         name: 'edit ticket',
         path: '$root/:id/edit',
         redirect: invalidId(root),
-        builder: (context, state) => BlocProvider(
-          create: (context) => TicketFormBloc(
-            repo: context.read<BaseTicketRepository>(),
-            mode: FormModes.edit,
-            id: _idFromRouter(context, state),
+        pageBuilder: (context, state) => NoTransitionPage(
+          child: BlocProvider(
+            create: (context) => TicketFormBloc(
+              repo: context.read<BaseTicketRepository>(),
+              mode: FormModes.edit,
+              id: _idFromRouter(context, state),
+            ),
+            child: const TicketFormScreen(),
           ),
-          child: const TicketFormScreen(),
         ),
       ),
       GoRoute(
@@ -96,13 +102,15 @@ ShellRoute ticketsRouteConfiguration({
         name: 'view ticket',
         path: '$root/:id/view',
         redirect: invalidId(root),
-        builder: (context, state) => BlocProvider(
-          create: (context) => TicketFormBloc(
-            repo: context.read<BaseTicketRepository>(),
-            mode: FormModes.view,
-            id: _idFromRouter(context, state),
+        pageBuilder: (context, state) => NoTransitionPage(
+          child: BlocProvider(
+            create: (context) => TicketFormBloc(
+              repo: context.read<BaseTicketRepository>(),
+              mode: FormModes.view,
+              id: _idFromRouter(context, state),
+            ),
+            child: const TicketFormScreen(),
           ),
-          child: const TicketFormScreen(),
         ),
       ),
     ],
