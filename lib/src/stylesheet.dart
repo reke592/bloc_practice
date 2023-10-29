@@ -10,7 +10,10 @@ abstract class Stylesheet {
   );
 
   static const black1 = Colors.black87;
-  static const black2 = Colors.black54;
+  static const black2 = Colors.black;
+
+  static const grey1 = Color.fromRGBO(30, 30, 30, 1);
+  static const grey2 = Color.fromRGBO(30, 30, 30, 0.5);
 
   static final green1 = Colors.green.shade600;
 
@@ -18,7 +21,9 @@ abstract class Stylesheet {
   static const white2 = Colors.white;
   static final white3 = Colors.amber.shade50;
 
-  static final mainTheme = ThemeData(
+  static final mainTheme = darkTheme;
+
+  static final darkTheme = ThemeData(
     colorScheme: ColorScheme(
       brightness: Brightness.dark,
       primary: black1,
@@ -27,9 +32,9 @@ abstract class Stylesheet {
       onSecondary: white2,
       error: Colors.transparent,
       onError: Colors.amber.shade900,
-      background: black2,
+      background: grey1,
       onBackground: white1,
-      surface: black2,
+      surface: grey1,
       onSurface: white1,
     ),
     appBarTheme: const AppBarTheme(
@@ -112,6 +117,11 @@ abstract class Stylesheet {
     scrollbarTheme: ScrollbarThemeData(
       thumbVisibility: MaterialStateProperty.resolveWith((states) => true),
       thickness: MaterialStateProperty.resolveWith((states) => 2),
+    ),
+    textSelectionTheme: const TextSelectionThemeData(
+      cursorColor: white1,
+      selectionColor: grey2,
+      selectionHandleColor: white1,
     ),
   );
 }

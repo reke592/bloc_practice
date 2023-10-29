@@ -179,8 +179,8 @@ class _FilterOptionsState<T> extends State<FilterOptions<T>> {
               builder: (context) {
                 return Wrap(
                   alignment: WrapAlignment.center,
-                  spacing: 8,
-                  runSpacing: 4,
+                  spacing: 4,
+                  runSpacing: 2,
                   children: [
                     for (var option
                         in widget.provider.tagOptions[name]!.options)
