@@ -1,58 +1,19 @@
+import 'dart:convert';
+
 import 'package:bloc_practice/src/common/enums/entity_mutations.dart';
 import 'package:bloc_practice/src/common/exceptions/record_not_found.dart';
 import 'package:bloc_practice/src/tickets/domain/base_tickets_repository.dart';
 import 'package:bloc_practice/src/tickets/domain/models/ticket.dart';
 import 'package:bloc_practice/src/tickets/domain/models/ticket_history.dart';
 import 'package:bloc_practice/src/tickets/domain/models/ticket_status.dart';
+import 'package:flutter/services.dart';
 
 /// for testing purpose
 class TicketsMemoryRepository extends BaseTicketRepository {
-  final List<String> _companies = [
-    'ABC Inc.',
-    'DEF Alliance',
-    'GHI Machineries',
-    'JK Laboratories',
-    'MiNO Corp.',
-  ];
-  final List<Ticket> _tickets = [
-    Ticket(
-      id: const TicketId(value: 1, isTemporary: false),
-      customer: 'ABC Inc.',
-      title: 'Email notification enhancement',
-      narration: 'sent email queue must have data retention of atleast 30d.',
-      status: 'For Development',
-      created: DateTime.parse('2023-10-01'),
-    ),
-    Ticket(
-      id: const TicketId(value: 2, isTemporary: false),
-      customer: 'MiNO Corp.',
-      title: 'Logs integration',
-      narration: 'Legacy system logs to roll-up in new system',
-      status: 'On Testing',
-      created: DateTime.parse('2023-10-02'),
-    ),
-    Ticket(
-      id: const TicketId(value: 3, isTemporary: false),
-      customer: 'GHI Machineries',
-      title: 'Additional analytics chart for Manpower Allocation',
-      narration:
-          'Request for additional analytics chart to balance Manpower Allocation in multiple site locations',
-      status: 'For Verification',
-      created: DateTime.parse('2023-10-03'),
-    ),
-  ];
+  final List<String> _companies = [];
+  final List<Ticket> _tickets = [];
   final Map<TicketId, List<TicketHistory>> _history = {};
-  final List<TicketStatus> _statuses = [
-    TicketStatus(name: 'Open'),
-    TicketStatus(name: 'For Development'),
-    TicketStatus(name: 'On Development'),
-    TicketStatus(name: 'For Testing'),
-    TicketStatus(name: 'On Testing'),
-    TicketStatus(name: 'For Verification'),
-    TicketStatus(name: 'For Merge Feature'),
-    TicketStatus(name: 'Merged Feature'),
-    TicketStatus(name: 'Closed'),
-  ];
+  final List<TicketStatus> _statuses = [];
 
   @override
   void dispose() {
@@ -80,6 +41,12 @@ class TicketsMemoryRepository extends BaseTicketRepository {
 
   @override
   Future<List<Ticket>> loadTickets() async {
+    if (_tickets.isEmpty) {
+      final data = await rootBundle
+          .loadString('resource/data/tickets/stub_tickets.json');
+      _tickets.addAll(List<Map<String, dynamic>>.from(jsonDecode(data))
+          .map<Ticket>(Ticket.fromJson));
+    }
     return await Future.delayed(
       const Duration(milliseconds: 1500),
       () => List<Ticket>.from(_tickets),
@@ -110,6 +77,12 @@ class TicketsMemoryRepository extends BaseTicketRepository {
 
   @override
   Future<List<TicketStatus>> loadTicketStatuses() async {
+    if (_statuses.isEmpty) {
+      final data = await rootBundle
+          .loadString('resource/data/tickets/stub_statuses.json');
+      _statuses.addAll(List<Map<String, dynamic>>.from(jsonDecode(data))
+          .map<TicketStatus>(TicketStatus.fromJson));
+    }
     return await Future.delayed(
       const Duration(seconds: 1),
       () {
@@ -136,6 +109,11 @@ class TicketsMemoryRepository extends BaseTicketRepository {
 
   @override
   Future<List<String>> loadCustomers() async {
+    if (_companies.isEmpty) {
+      final data = await rootBundle
+          .loadString('resource/data/tickets/stub_companies.json');
+      _companies.addAll(List<String>.from(jsonDecode(data)));
+    }
     return await Future.delayed(
       const Duration(seconds: 1),
       () {

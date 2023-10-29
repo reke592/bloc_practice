@@ -18,17 +18,20 @@ class FilterOptions<T> extends StatefulWidget {
 class _FilterOptionsState<T> extends State<FilterOptions<T>> {
   Timer? _debouncer;
   late final TextEditingController _searchController;
+  late final ScrollController _scroll;
 
   @override
   void initState() {
     _searchController =
         TextEditingController(text: widget.provider.filterSearchText);
+    _scroll = ScrollController();
     super.initState();
   }
 
   @override
   void dispose() {
     _searchController.dispose();
+    _scroll.dispose();
     _debouncer?.cancel();
     super.dispose();
   }
@@ -41,24 +44,36 @@ class _FilterOptionsState<T> extends State<FilterOptions<T>> {
         children: [
           Text(
             'Filter current results',
-            style: Theme.of(context)
-                .textTheme
-                .bodyLarge
-                ?.copyWith(fontWeight: FontWeight.bold),
+            style: Theme.of(context).textTheme.titleMedium,
           ),
           const SizedBox(height: 10),
-          // Text search
-          textSearch(),
-          const SizedBox(height: 20),
-          // Sort options
-          sortOptions(),
-          const SizedBox(height: 10),
-          // Visibility Tags
-          const Align(
-            alignment: Alignment.centerLeft,
-            child: Text('Tags:'),
+          Expanded(
+            child: Scrollbar(
+              controller: _scroll,
+              child: SingleChildScrollView(
+                controller: _scroll,
+                child: Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: Column(
+                    children: [
+                      // Text search
+                      textSearch(),
+                      const SizedBox(height: 20),
+                      // Sort options
+                      sortOptions(),
+                      const SizedBox(height: 10),
+                      // Visibility Tags
+                      const Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text('Tags:'),
+                      ),
+                      tagsOption(),
+                    ],
+                  ),
+                ),
+              ),
+            ),
           ),
-          tagsOption(),
         ],
       ),
     );
@@ -66,6 +81,7 @@ class _FilterOptionsState<T> extends State<FilterOptions<T>> {
 
   Widget textSearch() {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         TextField(
           controller: _searchController,
@@ -80,12 +96,11 @@ class _FilterOptionsState<T> extends State<FilterOptions<T>> {
             });
           },
         ),
-        Align(
-          alignment: Alignment.centerLeft,
-          child: Text(
-            "Tip: combine search results by using '|'.\neg. 'email|chart'",
-            style: Theme.of(context).textTheme.bodySmall,
-          ),
+        const SizedBox(height: 10),
+        Text(
+          "Tip: combine search results by using '|'.\neg. 'email|chart'",
+          style: Theme.of(context).textTheme.labelSmall,
+          textAlign: TextAlign.left,
         ),
       ],
     );
@@ -153,56 +168,46 @@ class _FilterOptionsState<T> extends State<FilterOptions<T>> {
   }
 
   Widget tagsOption() {
-    return Expanded(
-      child: Builder(builder: (context) {
-        final scroll = ScrollController();
-        return Scrollbar(
-          controller: scroll,
-          thumbVisibility: true,
-          thickness: 4,
-          child: SingleChildScrollView(
-            controller: scroll,
-            child: Column(
-              children: [
-                for (var name in widget.provider.tagOptions.keys) ...[
-                  const Divider(),
-                  Text(name),
-                  const SizedBox(height: 10),
-                  Builder(
-                    builder: (context) {
-                      return Wrap(
-                        alignment: WrapAlignment.center,
-                        spacing: 8,
-                        runSpacing: 4,
-                        children: [
-                          for (var option
-                              in widget.provider.tagOptions[name]!.options)
-                            FilterChip(
-                              selected: widget.provider.isSelectedTag(
-                                name,
-                                option,
-                              ),
-                              label: Text(option),
-                              onSelected: (selected) {
-                                widget.provider.setSelectedFilter(
-                                  name: name,
-                                  value: option,
-                                  selected: selected,
-                                  notify: true,
-                                );
-                                (context as Element).markNeedsBuild();
-                              },
-                            ),
-                        ],
-                      );
-                    },
-                  ),
-                ],
-              ],
+    return Builder(builder: (context) {
+      return Column(
+        children: [
+          for (var name in widget.provider.tagOptions.keys) ...[
+            const Divider(),
+            Text(name),
+            const SizedBox(height: 10),
+            Builder(
+              builder: (context) {
+                return Wrap(
+                  alignment: WrapAlignment.center,
+                  spacing: 8,
+                  runSpacing: 4,
+                  children: [
+                    for (var option
+                        in widget.provider.tagOptions[name]!.options)
+                      FilterChip(
+                        showCheckmark: false,
+                        selected: widget.provider.isSelectedTag(
+                          name,
+                          option,
+                        ),
+                        onSelected: (selected) {
+                          widget.provider.setSelectedFilter(
+                            name: name,
+                            value: option,
+                            selected: selected,
+                            notify: true,
+                          );
+                          (context as Element).markNeedsBuild();
+                        },
+                        label: Text(option),
+                      ),
+                  ],
+                );
+              },
             ),
-          ),
-        );
-      }),
-    );
+          ],
+        ],
+      );
+    });
   }
 }

@@ -10,7 +10,7 @@ abstract class Stylesheet {
   );
 
   static const black1 = Colors.black87;
-  static const black2 = Colors.black;
+  static const black2 = Colors.black54;
 
   static final green1 = Colors.green.shade600;
 
@@ -45,8 +45,11 @@ abstract class Stylesheet {
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
+        padding: const EdgeInsets.all(12),
         backgroundColor: Colors.transparent,
-        shape: buttonShape,
+        shape: buttonShape.copyWith(
+          side: const BorderSide(color: white1, width: 1),
+        ),
       ),
     ),
     outlinedButtonTheme: OutlinedButtonThemeData(
@@ -81,7 +84,7 @@ abstract class Stylesheet {
     chipTheme: ChipThemeData(
       backgroundColor: Colors.transparent,
       checkmarkColor: green1,
-      side: const BorderSide(color: white1, width: 0.1),
+      side: const BorderSide(color: white1, width: 0.15),
       labelStyle: const TextStyle(color: white1),
       secondaryLabelStyle: const TextStyle(color: black1),
       secondarySelectedColor: black1,
@@ -105,6 +108,10 @@ abstract class Stylesheet {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
       ),
+    ),
+    scrollbarTheme: ScrollbarThemeData(
+      thumbVisibility: MaterialStateProperty.resolveWith((states) => true),
+      thickness: MaterialStateProperty.resolveWith((states) => 2),
     ),
   );
 }

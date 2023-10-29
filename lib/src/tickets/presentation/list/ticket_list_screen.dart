@@ -65,41 +65,45 @@ class TicketListScreen extends StatelessWidget {
                 ],
               ),
               Expanded(
-                child: ListView.builder(
-                  itemCount: list.length,
-                  itemBuilder: (context, index) {
-                    final textTheme = Theme.of(context).textTheme;
-                    return ListTile(
-                      title: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          TicketNumber(id: list[index].id),
-                          Text(list[index].title),
-                        ],
-                      ),
-                      titleTextStyle: textTheme.bodyMedium,
-                      subtitleTextStyle: textTheme.bodySmall?.copyWith(
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(list[index].customer),
-                          Text(list[index].narration),
-                          Text(list[index].created?.toString() ?? ''),
-                        ],
-                      ),
-                      trailing: Text(list[index].status),
-                      // TODO: something is happenning with GoRouter
-                      // when we use NoTransitionPage we are required to use pushNamed to get the previous route name
-                      onTap: () => context.goNamed(
-                        'view ticket',
-                        pathParameters: {
-                          'id': list[index].id.toString(),
-                        },
-                      ),
-                    ).addShimmer(state.isLoading);
-                  },
+                child: Scrollbar(
+                  child: ListView.builder(
+                    primary: true,
+                    itemCount: list.length,
+                    itemBuilder: (context, index) {
+                      final textTheme = Theme.of(context).textTheme;
+                      return ListTile(
+                        title: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            TicketNumber(id: list[index].id),
+                            Text(list[index].title),
+                          ],
+                        ),
+                        titleTextStyle: textTheme.bodyMedium,
+                        subtitleTextStyle: textTheme.bodySmall?.copyWith(
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(list[index].customer),
+                            Text(list[index].narration),
+                            Text(list[index].created?.toLocal().toString() ??
+                                ''),
+                          ],
+                        ),
+                        trailing: Text(list[index].status),
+                        // TODO: something is happenning with GoRouter
+                        // when we use NoTransitionPage we are required to use pushNamed to get the previous route name
+                        onTap: () => context.pushNamed(
+                          'view ticket',
+                          pathParameters: {
+                            'id': list[index].id.toString(),
+                          },
+                        ),
+                      ).addShimmer(state.isLoading);
+                    },
+                  ),
                 ),
               ),
             ],

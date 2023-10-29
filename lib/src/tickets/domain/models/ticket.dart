@@ -75,6 +75,16 @@ class Ticket extends Entity<TicketId> {
         history: history ?? this.history,
       );
 
+  factory Ticket.fromJson(Map<String, dynamic> json) => Ticket(
+        id: TicketId(value: json['id'], isTemporary: false),
+        category: json['category'],
+        created: DateTime.tryParse('${json['created']}'),
+        customer: json['customer'],
+        narration: json['narration'],
+        status: json['status'],
+        title: json['title'],
+      );
+
   Ticket setClient(String client) => copyWith(
         mutation: EntityMutation.modified,
         customer: client,
