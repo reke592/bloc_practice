@@ -8,15 +8,18 @@ class PreviousRouteObserver extends NavigatorObserver {
     PreviousRouteObserver.value = previousRoute;
   }
 
+  @override
   void didPop(Route<dynamic> route, Route<dynamic>? previousRoute) {
-    print(previousRoute);
+    // print(previousRoute);
   }
 
+  @override
   void didRemove(Route<dynamic> route, Route<dynamic>? previousRoute) {
-    print(previousRoute);
+    // print(previousRoute);
   }
 
+  @override
   void didReplace({Route<dynamic>? newRoute, Route<dynamic>? oldRoute}) {
-    print(oldRoute);
+    // print(oldRoute);
   }
 }

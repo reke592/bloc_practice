@@ -51,7 +51,9 @@ class TicketListScreen extends StatelessWidget {
                     status: 'Status',
                   ),
                 )
-              : state.tickets;
+              : state.action is! FilteredList
+                  ? state.tickets
+                  : (state.action as FilteredList).data;
 
           return Column(
             children: [
@@ -90,7 +92,7 @@ class TicketListScreen extends StatelessWidget {
                       trailing: Text(list[index].status),
                       // TODO: something is happenning with GoRouter
                       // when we use NoTransitionPage we are required to use pushNamed to get the previous route name
-                      onTap: () => context.pushNamed(
+                      onTap: () => context.goNamed(
                         'view ticket',
                         pathParameters: {
                           'id': list[index].id.toString(),

@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:bloc_practice/src/common/mixins/filter_data_properties.dart';
-import 'package:chips_choice/chips_choice.dart';
 import 'package:flutter/material.dart';
 
 class FilterOptions<T> extends StatefulWidget {
@@ -168,28 +167,33 @@ class _FilterOptionsState<T> extends State<FilterOptions<T>> {
                 for (var name in widget.provider.tagOptions.keys) ...[
                   const Divider(),
                   Text(name),
+                  const SizedBox(height: 10),
                   Builder(
                     builder: (context) {
-                      return ChipsChoice.multiple(
-                        wrapped: true,
+                      return Wrap(
                         alignment: WrapAlignment.center,
-                        value: widget.provider.tagOptions[name]!.selected,
-                        choiceItems: [
+                        spacing: 8,
+                        runSpacing: 4,
+                        children: [
                           for (var option
                               in widget.provider.tagOptions[name]!.options)
-                            C2Choice(
-                              value: option,
-                              label: option,
-                            )
+                            FilterChip(
+                              selected: widget.provider.isSelectedTag(
+                                name,
+                                option,
+                              ),
+                              label: Text(option),
+                              onSelected: (selected) {
+                                widget.provider.setSelectedFilter(
+                                  name: name,
+                                  value: option,
+                                  selected: selected,
+                                  notify: true,
+                                );
+                                (context as Element).markNeedsBuild();
+                              },
+                            ),
                         ],
-                        onChanged: (value) {
-                          widget.provider.setSelectedTag(
-                            name: name,
-                            value: value,
-                            notify: true,
-                          );
-                          (context as Element).markNeedsBuild();
-                        },
                       );
                     },
                   ),

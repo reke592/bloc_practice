@@ -12,11 +12,12 @@ class ButtonSave extends StatelessWidget {
       buildWhen: (_, current) =>
           current.action is LoadDetails || current.action is FormSave,
       builder: (context, state) {
-        return ElevatedButton(
+        return TextButton.icon(
           onPressed: () {
             context.read<TicketFormBloc>().add(FormSave());
           },
-          child: const Text('Save'),
+          icon: const Icon(Icons.save_outlined),
+          label: const Text('Save'),
         ).addShimmer(state.isLoading);
       },
     );

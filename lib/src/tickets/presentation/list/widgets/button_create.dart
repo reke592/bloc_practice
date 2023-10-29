@@ -9,7 +9,7 @@ class ButtonCreate extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
+    return TextButton.icon(
       onPressed: () {
         final tempId = TicketId.temporary(
             context.read<TicketListBloc>().state.tickets.length + 1);
@@ -19,7 +19,8 @@ class ButtonCreate extends StatelessWidget {
           pathParameters: {'id': '$tempId'},
         );
       },
-      child: const Text('Create New Ticket'),
+      icon: const Icon(Icons.create),
+      label: const Text('Create New Ticket'),
     );
   }
 }

@@ -57,14 +57,8 @@ class TicketFormScreen extends StatelessWidget {
       buildWhen: (_, current) =>
           current.action is LoadDetails || current.action is FormEdit,
       builder: (context, state) {
-        final bloc = context.read<TicketFormBloc>();
         final isLandscape =
             MediaQuery.orientationOf(context) == Orientation.landscape;
-        if (state.isInitial) {
-          bloc
-            ..add(LoadDetails(bloc.state.data.id))
-            ..add(LoadTicketHistory(bloc.state.data.id));
-        }
         return Scaffold(
           appBar: AppBar(
             leading: const ButtonClose(),

@@ -12,32 +12,26 @@ enum FilterSort {
 /// {@endtemplate}
 class FilterTagOptions<T> {
   final String name;
-  final bool Function(T record, String tag) resolve;
-  final List<String> options;
-  final List<String> selected;
+  final String Function(T record) resolve;
+  final Set<String> options;
+  final Set<String> selected;
 
   /// test record for matched tag
-  bool test(T record) {
-    if (selected.isEmpty) return true;
-    for (var tag in selected) {
-      if (resolve(record, tag)) return true;
-    }
-    return false;
-  }
+  bool test(T record) => selected.contains(resolve(record));
 
   /// {@macro filter_tag_options}
   FilterTagOptions({
     required this.name,
     required this.options,
     required this.resolve,
-    this.selected = const [],
+    this.selected = const {},
   });
 
   FilterTagOptions<T> copyWith({
     String? name,
-    bool Function(T record, String tag)? resolve,
-    List<String>? options,
-    List<String>? selected,
+    String Function(T record)? resolve,
+    Set<String>? options,
+    Set<String>? selected,
   }) =>
       FilterTagOptions(
         name: name ?? this.name,
@@ -46,7 +40,7 @@ class FilterTagOptions<T> {
         selected: selected ?? this.selected,
       );
 
-  FilterTagOptions<T> withSelected(List<String> value) =>
+  FilterTagOptions<T> withSelected(Set<String> value) =>
       copyWith(selected: value);
 }
 
@@ -68,11 +62,6 @@ mixin FilterDataProperties<T> on Object {
   /// {@endtemplate}
   String? filterSortBy;
 
-  /// {@template filter_tags}
-  /// display tagged results
-  /// {@endtemplate}
-  List<String> filterActiveTags = [];
-
   /// {@template filter_sort_options}
   /// sort options
   /// {@endtemplate}
@@ -89,12 +78,12 @@ mixin FilterDataProperties<T> on Object {
   @protected
   void addTagOptions({
     required String name,
-    required List<String> options,
-    required bool Function(T record, String tag) resolve,
+    required Set<String> options,
+    required String Function(T record) resolve,
   }) {
     if (tagOptions.containsKey(name)) {
       final current = tagOptions[name]!;
-      final selected = List<String>.from(current.selected)
+      final selected = Set<String>.from(current.selected)
         ..removeWhere((element) => !options.contains(element));
       tagOptions[name] = current.copyWith(
         options: options,
@@ -200,13 +189,11 @@ mixin FilterDataProperties<T> on Object {
     String? searchText,
     String? Function()? sortBy,
     FilterSort? sortDirection,
-    List<String>? activeTags,
   }) async {
     _snapshot = snapshot;
     this.filterSearchText = searchText ?? this.filterSearchText;
     this.filterSortBy = sortBy != null ? sortBy() : this.filterSortBy;
     this.sortDirection = sortDirection ?? this.sortDirection;
-    this.filterActiveTags = activeTags ?? this.filterActiveTags;
     onApplyFilter(await filteredSorted());
   }
 
@@ -238,9 +225,10 @@ mixin FilterDataProperties<T> on Object {
   }
 
   /// update selected tag, calls [onApplyFilter] when notify is true.
+  @Deprecated('use setSelectedFilter')
   void setSelectedTag({
     required String name,
-    required List<String> value,
+    required Set<String> value,
     bool notify = false,
   }) {
     tagOptions[name] = tagOptions[name]!.copyWith(selected: value);
@@ -248,4 +236,26 @@ mixin FilterDataProperties<T> on Object {
       applyFilter(_snapshot);
     }
   }
+
+  /// update selected tag, calls [onApplyFilter] when notify is true.
+  void setSelectedFilter({
+    required String name,
+    required String value,
+    required bool selected,
+    bool notify = false,
+  }) {
+    final tags = Set<String>.from(tagOptions[name]!.selected);
+    if (selected) {
+      tags.add(value);
+    } else {
+      tags.remove(value);
+    }
+    tagOptions[name] = tagOptions[name]!.copyWith(selected: tags);
+    if (notify) {
+      applyFilter(_snapshot);
+    }
+  }
+
+  bool isSelectedTag(String name, String value) =>
+      tagOptions[name]?.selected.contains(value) ?? false;
 }

@@ -36,15 +36,15 @@ class TicketListBloc extends Bloc<TicketListEvent, TicketListState>
     _loadedCustomers = repo.getLoadedCustomers().listen((data) {
       addTagOptions(
         name: 'Customers',
-        options: data,
-        resolve: (record, tag) => record.customer == tag,
+        options: data.toSet(),
+        resolve: (record) => record.customer,
       );
     });
     _loadedTicketStatus = repo.getLoadedTicketStatus().listen((data) {
       addTagOptions(
         name: 'Ticket Status',
-        options: data.map((e) => e.name).toList(),
-        resolve: (record, tag) => record.status == tag,
+        options: data.map((e) => e.name).toSet(),
+        resolve: (record) => record.status,
       );
     });
     on<FilteredList>(_onFilteredList);
@@ -79,8 +79,8 @@ class TicketListBloc extends Bloc<TicketListEvent, TicketListState>
 
   _onCreatedTicket(CreatedTicket event, _E emit) {
     final result = List<Ticket>.from(state.tickets)..add(event.data);
+    emit(state.success(event, result));
     applyFilter(result);
-    // emit(state.success(event, result));
   }
 
   _onUpdatedTicket(UpdatedTicket event, _E emit) {
@@ -92,16 +92,15 @@ class TicketListBloc extends Bloc<TicketListEvent, TicketListState>
     } else {
       newList.add(event.data);
     }
-
+    emit(state.success(event, newList));
     applyFilter(newList);
-    // emit(state.success(event, newList));
   }
 
   Future<void> _onLoadList(LoadList event, _E emit) async {
     emit(state.loading(event));
     final result = await _repo.loadTickets().catchError(_onError(event, emit));
+    emit(state.success(event, result));
     applyFilter(result);
-    // emit(state.success(event, result));
   }
 
   Future<void> _onCreateNewTicket(CreateNewTicket event, _E emit) async {
@@ -109,7 +108,7 @@ class TicketListBloc extends Bloc<TicketListEvent, TicketListState>
   }
 
   void _onFilteredList(FilteredList event, _E emit) {
-    emit(state.success(event, event.data));
+    emit(state.withFiltered(event));
   }
 
   Function(Object error, [StackTrace? stackTrace]) _onError<T>(

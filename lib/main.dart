@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:bloc_practice/src/router.dart';
+import 'package:bloc_practice/src/stylesheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -38,20 +39,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       title: 'Bloc Practice',
-      theme: ThemeData(
-        // colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueGrey),
-        useMaterial3: true,
-        inputDecorationTheme: const InputDecorationTheme(
-          border: OutlineInputBorder(),
-          isDense: true,
-          alignLabelWithHint: true,
-        ),
-        dropdownMenuTheme: const DropdownMenuThemeData(
-          inputDecorationTheme: InputDecorationTheme(
-            isDense: true,
-          ),
-        ),
-      ),
+      theme: Stylesheet.mainTheme,
       routerConfig: routerConfig,
       scrollBehavior: CustomScroll(),
     );
