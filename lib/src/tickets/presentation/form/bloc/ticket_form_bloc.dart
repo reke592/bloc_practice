@@ -45,8 +45,9 @@ class TicketFormBloc extends Bloc<TicketFormEvent, TicketFormState> {
       emit(state.loading(event));
       final data = await _repo.loadTicketDetails(event.id);
       emit(state.success(event, data));
-    } catch (error, stackTrace) {
-      _onError(event, emit)(error, stackTrace);
+    } catch (error) {
+      emit(state.failed(event, error));
+      rethrow;
     }
   }
 
@@ -59,8 +60,9 @@ class TicketFormBloc extends Bloc<TicketFormEvent, TicketFormState> {
         event,
         state.data.withHistory(result),
       ));
-    } catch (error, stackTrace) {
-      _onError(event, emit)(error, stackTrace);
+    } catch (error) {
+      emit(state.failed(event, error));
+      rethrow;
     }
   }
 
@@ -81,8 +83,8 @@ class TicketFormBloc extends Bloc<TicketFormEvent, TicketFormState> {
   }
 
   Future<void> _onFormSave(FormSave event, _E emit) async {
-    emit(state.loading(event));
     try {
+      emit(state.loading(event));
       final result = (state.data.id.isTemporary)
           ? await _repo.createTicket(state.data)
           : await _repo.updateTicket(state.data);
@@ -92,14 +94,15 @@ class TicketFormBloc extends Bloc<TicketFormEvent, TicketFormState> {
         _repo.updatedTicket.add(result);
       }
       emit(state.success(event, result));
-    } catch (error, stackTrace) {
-      _onError(event, emit)(error, stackTrace);
+    } catch (error) {
+      emit(state.failed(event, error));
+      rethrow;
     }
   }
 
   Future<void> _onFormClose(FormClose event, _E emit) async {
     if (state.data.isModified && !event.discard) {
-      _onError(event, emit)(FormDirtyException());
+      emit(state.failed(event, FormDirtyException()));
     } else {
       emit(state.success(event, state.data));
     }
@@ -110,14 +113,5 @@ class TicketFormBloc extends Bloc<TicketFormEvent, TicketFormState> {
       event,
       state.data.setStatus(event.value),
     ));
-  }
-
-  Function(Object error, [StackTrace? stackTrace]) _onError<T>(
-    TicketFormEvent action,
-    _E emit,
-  ) {
-    return (error, [stackTrace]) {
-      emit(state.failed(action, error));
-    };
   }
 }

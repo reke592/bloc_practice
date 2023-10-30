@@ -17,6 +17,8 @@ abstract class Stylesheet {
 
   static final green1 = Colors.green.shade600;
 
+  static final blue1 = Colors.blue.shade600;
+
   static const white1 = Colors.white70;
   static const white2 = Colors.white;
   static final white3 = Colors.amber.shade50;
@@ -104,7 +106,7 @@ abstract class Stylesheet {
           if (states.contains(MaterialState.selected)) {
             return green1;
           }
-          return black1;
+          return white1;
         },
       ),
     ),
@@ -115,13 +117,15 @@ abstract class Stylesheet {
       ),
     ),
     scrollbarTheme: ScrollbarThemeData(
+      thumbColor: MaterialStateProperty.resolveWith((states) => grey1),
+      trackVisibility: MaterialStateProperty.resolveWith((states) => false),
       thumbVisibility: MaterialStateProperty.resolveWith((states) => true),
       thickness: MaterialStateProperty.resolveWith((states) => 2),
     ),
-    textSelectionTheme: const TextSelectionThemeData(
+    textSelectionTheme: TextSelectionThemeData(
       cursorColor: white1,
-      selectionColor: grey2,
-      selectionHandleColor: white1,
+      selectionColor: blue1,
+      selectionHandleColor: blue1,
     ),
   );
 }

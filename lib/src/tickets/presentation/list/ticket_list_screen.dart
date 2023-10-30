@@ -55,6 +55,22 @@ class TicketListScreen extends StatelessWidget {
                   ? state.tickets
                   : (state.action as FilteredList).data;
 
+          if (state.isError) {
+            return Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.error, size: 48),
+                  Text(
+                    'Oops.. something went wrong. :(',
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                  Text('${state.error}'),
+                ],
+              ),
+            );
+          }
+
           return Column(
             children: [
               const Row(

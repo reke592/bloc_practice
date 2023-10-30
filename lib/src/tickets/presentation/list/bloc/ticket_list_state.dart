@@ -69,7 +69,7 @@ class TicketListState extends Equatable {
         error: () => error,
       );
 
-  TicketListState withFiltered(TicketListEvent action) => copyWith(
+  TicketListState withFilteredList(TicketListEvent action) => copyWith(
         action: action,
         mutation: BlocMutation.success,
       );

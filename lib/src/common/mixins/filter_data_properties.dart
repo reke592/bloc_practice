@@ -109,7 +109,8 @@ mixin FilterDataProperties<T> on Object {
   }
 
   /// original result reference
-  FutureOr<List<T>> _snapshot = Future.value([]);
+  @protected
+  FutureOr<List<T>> get filterReference;
 
   /// value to test for [searchPattern]
   @protected
@@ -161,7 +162,7 @@ mixin FilterDataProperties<T> on Object {
     final activeTags = testActiveTags();
     _totalRecords = 0;
     _visibleRecords = 0;
-    for (var record in await _snapshot) {
+    for (var record in await filterReference) {
       _totalRecords++;
       if (activeTags(record) && pattern.hasMatch(forSearch(record))) {
         _visibleRecords++;
@@ -184,13 +185,11 @@ mixin FilterDataProperties<T> on Object {
 
   /// update filter settings and call [onApplyFilter]
   @protected
-  Future<void> applyFilter(
-    FutureOr<List<T>> snapshot, {
+  Future<void> applyFilter({
     String? searchText,
     String? Function()? sortBy,
     FilterSort? sortDirection,
   }) async {
-    _snapshot = snapshot;
     this.filterSearchText = searchText ?? this.filterSearchText;
     this.filterSortBy = sortBy != null ? sortBy() : this.filterSortBy;
     this.sortDirection = sortDirection ?? this.sortDirection;
@@ -200,7 +199,7 @@ mixin FilterDataProperties<T> on Object {
   /// change search text, calls [onApplyFilter] when notify is true.
   void setFilterSearchText(String value, {bool notify = false}) {
     if (notify) {
-      applyFilter(_snapshot, searchText: value);
+      applyFilter(searchText: value);
     } else {
       filterSearchText = value;
     }
@@ -209,7 +208,7 @@ mixin FilterDataProperties<T> on Object {
   /// update filter sort, calls [onApplyFilter] when notify is true.
   void setFilterSort(String? value, {bool notify = false}) {
     if (notify) {
-      applyFilter(_snapshot, sortBy: () => value);
+      applyFilter(sortBy: () => value);
     } else {
       filterSortBy = value;
     }
@@ -218,7 +217,7 @@ mixin FilterDataProperties<T> on Object {
   /// update sort direction, calls [onApplyFilter] when notify is true.
   void setFilterSortDirection(FilterSort value, {bool notify = false}) {
     if (notify) {
-      applyFilter(_snapshot, sortDirection: value);
+      applyFilter(sortDirection: value);
     } else {
       sortDirection = value;
     }
@@ -233,7 +232,7 @@ mixin FilterDataProperties<T> on Object {
   }) {
     tagOptions[name] = tagOptions[name]!.copyWith(selected: value);
     if (notify) {
-      applyFilter(_snapshot);
+      applyFilter();
     }
   }
 
@@ -252,7 +251,7 @@ mixin FilterDataProperties<T> on Object {
     }
     tagOptions[name] = tagOptions[name]!.copyWith(selected: tags);
     if (notify) {
-      applyFilter(_snapshot);
+      applyFilter();
     }
   }
 

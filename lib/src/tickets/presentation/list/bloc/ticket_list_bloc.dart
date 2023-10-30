@@ -27,6 +27,7 @@ class TicketListBloc extends Bloc<TicketListEvent, TicketListState>
     on<CreateNewTicket>(_onCreateNewTicket);
     on<CreatedTicket>(_onCreatedTicket);
     on<UpdatedTicket>(_onUpdatedTicket);
+    on<FilteredList>(_onFilteredList);
     _createdTicket = repo.getCreated().listen((Ticket data) {
       add(CreatedTicket(data));
     });
@@ -47,7 +48,6 @@ class TicketListBloc extends Bloc<TicketListEvent, TicketListState>
         resolve: (record) => record.status,
       );
     });
-    on<FilteredList>(_onFilteredList);
   }
 
   @override
@@ -58,6 +58,22 @@ class TicketListBloc extends Bloc<TicketListEvent, TicketListState>
     await _loadedTicketStatus.cancel();
     return super.close();
   }
+
+  @override
+  void onChange(Change<TicketListState> change) {
+    super.onChange(change);
+    if (change.nextState.isSuccess) {
+      switch (change.nextState.action.runtimeType) {
+        case LoadList:
+        case CreatedTicket:
+        case UpdatedTicket:
+          applyFilter();
+      }
+    }
+  }
+
+  @override
+  FutureOr<List<Ticket>> get filterReference => state.tickets;
 
   @override
   String forSearch(record) =>
@@ -80,7 +96,6 @@ class TicketListBloc extends Bloc<TicketListEvent, TicketListState>
   _onCreatedTicket(CreatedTicket event, _E emit) {
     final result = List<Ticket>.from(state.tickets)..add(event.data);
     emit(state.success(event, result));
-    applyFilter(result);
   }
 
   _onUpdatedTicket(UpdatedTicket event, _E emit) {
@@ -93,14 +108,17 @@ class TicketListBloc extends Bloc<TicketListEvent, TicketListState>
       newList.add(event.data);
     }
     emit(state.success(event, newList));
-    applyFilter(newList);
   }
 
   Future<void> _onLoadList(LoadList event, _E emit) async {
-    emit(state.loading(event));
-    final result = await _repo.loadTickets().catchError(_onError(event, emit));
-    emit(state.success(event, result));
-    applyFilter(result);
+    try {
+      emit(state.loading(event));
+      final result = await _repo.loadTickets();
+      emit(state.success(event, result));
+    } catch (error) {
+      emit(state.failed(event, error));
+      rethrow;
+    }
   }
 
   Future<void> _onCreateNewTicket(CreateNewTicket event, _E emit) async {
@@ -108,15 +126,6 @@ class TicketListBloc extends Bloc<TicketListEvent, TicketListState>
   }
 
   void _onFilteredList(FilteredList event, _E emit) {
-    emit(state.withFiltered(event));
-  }
-
-  Function(Object error, [StackTrace? stackTrace]) _onError<T>(
-    TicketListEvent action,
-    _E emit,
-  ) {
-    return (error, [stackTrace]) {
-      emit(state.failed(action, error));
-    };
+    emit(state.withFilteredList(event));
   }
 }
