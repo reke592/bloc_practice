@@ -91,7 +91,7 @@ abstract class Stylesheet {
     chipTheme: ChipThemeData(
       backgroundColor: Colors.transparent,
       checkmarkColor: green1,
-      side: const BorderSide(color: white1, width: 0.15),
+      side: BorderSide(color: white1.withOpacity(0.5), width: 0.5),
       labelStyle: const TextStyle(color: white1),
       secondaryLabelStyle: const TextStyle(color: black1),
       secondarySelectedColor: black1,

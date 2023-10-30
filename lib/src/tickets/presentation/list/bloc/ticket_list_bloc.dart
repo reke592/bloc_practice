@@ -35,17 +35,17 @@ class TicketListBloc extends Bloc<TicketListEvent, TicketListState>
       add(UpdatedTicket(data));
     });
     _loadedCustomers = repo.getLoadedCustomers().listen((data) {
-      addTagOptions(
+      useTagOptions(
         name: 'Customers',
         options: data.toSet(),
-        resolve: (record) => record.customer,
+        matchString: (record) => record.customer,
       );
     });
     _loadedTicketStatus = repo.getLoadedTicketStatus().listen((data) {
-      addTagOptions(
+      useTagOptions(
         name: 'Ticket Status',
         options: data.map((e) => e.name).toSet(),
-        resolve: (record) => record.status,
+        matchString: (record) => record.status,
       );
     });
   }

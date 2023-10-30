@@ -12,18 +12,18 @@ enum FilterSort {
 /// {@endtemplate}
 class FilterTagOptions<T> {
   final String name;
-  final String Function(T record) resolve;
+  final String Function(T record) matchString;
   final Set<String> options;
   final Set<String> selected;
 
   /// test record for matched tag
-  bool test(T record) => selected.contains(resolve(record));
+  bool test(T record) => selected.contains(matchString(record));
 
   /// {@macro filter_tag_options}
   FilterTagOptions({
     required this.name,
     required this.options,
-    required this.resolve,
+    required this.matchString,
     this.selected = const {},
   });
 
@@ -36,7 +36,7 @@ class FilterTagOptions<T> {
       FilterTagOptions(
         name: name ?? this.name,
         options: options ?? this.options,
-        resolve: resolve ?? this.resolve,
+        matchString: resolve ?? this.matchString,
         selected: selected ?? this.selected,
       );
 
@@ -74,12 +74,12 @@ mixin FilterDataProperties<T> on Object {
   /// {@endtemplate}
   final Map<String, FilterTagOptions<T>> tagOptions = {};
 
-  /// add or update tag options for filter options
+  /// use tag options for filtering
   @protected
-  void addTagOptions({
+  void useTagOptions({
     required String name,
     required Set<String> options,
-    required String Function(T record) resolve,
+    required String Function(T record) matchString,
   }) {
     if (tagOptions.containsKey(name)) {
       final current = tagOptions[name]!;
@@ -87,7 +87,7 @@ mixin FilterDataProperties<T> on Object {
         ..removeWhere((element) => !options.contains(element));
       tagOptions[name] = current.copyWith(
         options: options,
-        resolve: resolve,
+        resolve: matchString,
         selected: selected,
       );
     } else {
@@ -96,7 +96,7 @@ mixin FilterDataProperties<T> on Object {
         () => FilterTagOptions(
           name: name,
           options: options,
-          resolve: resolve,
+          matchString: matchString,
         ),
       );
     }
