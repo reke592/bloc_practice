@@ -3,6 +3,7 @@ import 'package:bloc_practice/src/common/entity_id.dart';
 import 'package:bloc_practice/src/common/enums/entity_mutations.dart';
 import 'package:bloc_practice/src/tickets/domain/models/ticket_history.dart';
 import 'package:flutter/widgets.dart';
+import 'package:mention_field/mention_field.dart';
 
 class TicketId extends EntityId<int> {
   const TicketId({
@@ -14,10 +15,15 @@ class TicketId extends EntityId<int> {
         value: value,
         isTemporary: true,
       );
+
+  factory TicketId.fromString(String value) => TicketId(
+        value: int.parse(value),
+        isTemporary: false,
+      );
 }
 
 @immutable
-class Ticket extends Entity<TicketId> {
+class Ticket extends Entity<TicketId> implements Mentionable {
   final String customer;
   final String title;
   final String narration;
@@ -26,6 +32,7 @@ class Ticket extends Entity<TicketId> {
   final String? category;
   final DateTime? created;
   final List<TicketHistory> history;
+  final List<MentionRange> mentions;
 
   const Ticket({
     required super.id,
@@ -37,6 +44,7 @@ class Ticket extends Entity<TicketId> {
     this.category,
     this.created,
     this.history = const [],
+    this.mentions = const [],
   });
 
   @override
@@ -46,6 +54,7 @@ class Ticket extends Entity<TicketId> {
         narration,
         status,
         history,
+        mentions,
         mutation,
       ];
 
@@ -62,6 +71,7 @@ class Ticket extends Entity<TicketId> {
     String? category,
     DateTime? created,
     List<TicketHistory>? history,
+    List<MentionRange>? mentions,
   }) =>
       Ticket(
         mutation: mutation,
@@ -73,6 +83,7 @@ class Ticket extends Entity<TicketId> {
         category: category ?? this.category,
         created: created ?? this.created,
         history: history ?? this.history,
+        mentions: mentions ?? this.mentions,
       );
 
   factory Ticket.fromJson(Map<String, dynamic> json) => Ticket(
@@ -83,6 +94,9 @@ class Ticket extends Entity<TicketId> {
         narration: json['narration'],
         status: json['status'],
         title: json['title'],
+        mentions: List<Map<String, dynamic>>.from(json['mentions'] ?? [])
+            .map(MentionRange.fromJson)
+            .toList(),
       );
 
   Ticket setClient(String client) => copyWith(
@@ -98,6 +112,11 @@ class Ticket extends Entity<TicketId> {
   Ticket setNarration(String narration) => copyWith(
         mutation: EntityMutation.modified,
         narration: narration,
+      );
+
+  Ticket withMentions(List<MentionRange> value) => copyWith(
+        mutation: EntityMutation.modified,
+        mentions: value,
       );
 
   Ticket tagCustomer(String customer) => copyWith(
@@ -137,4 +156,7 @@ class Ticket extends Entity<TicketId> {
       return this;
     }
   }
+
+  @override
+  String get mentionableText => id.toString().padLeft(6, '0');
 }

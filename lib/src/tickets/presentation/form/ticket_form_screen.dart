@@ -2,6 +2,7 @@ import 'package:bloc_practice/src/common/enums/form_modes.dart';
 import 'package:bloc_practice/src/common/exceptions/form_dirty_exception.dart';
 import 'package:bloc_practice/src/common/exceptions/record_not_found.dart';
 import 'package:bloc_practice/src/common/message_dialogs.dart';
+import 'package:bloc_practice/src/common/observers/previous_route_observer.dart';
 import 'package:bloc_practice/src/tickets/presentation/form/bloc/ticket_form_bloc.dart';
 import 'package:bloc_practice/src/tickets/presentation/form/widgets/button_close.dart';
 import 'package:bloc_practice/src/tickets/presentation/form/widgets/button_edit.dart';
@@ -26,8 +27,16 @@ class TicketFormScreen extends StatelessWidget {
         final bloc = context.read<TicketFormBloc>();
         // on success
         if (state.isSuccess) {
-          if (state.action is FormClose || state.action is FormSave) {
-            context.goNamed('ticket list');
+          if (state.action is FormSave) {
+            return context.goNamed('ticket list');
+          }
+          if (state.action is FormClose) {
+            var prev = PreviousRouteObserver.value?.settings.name;
+            if (prev == 'view ticket' || prev == 'edit ticket') {
+              return context.pop();
+            } else {
+              return context.goNamed('ticket list');
+            }
           }
         }
         // on error

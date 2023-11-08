@@ -106,10 +106,43 @@ class TicketListScreen extends StatelessWidget {
                             Text(list[index].narration),
                             Text(list[index].created?.toLocal().toString() ??
                                 ''),
+                            if (list[index].mentions.isNotEmpty) ...[
+                              Wrap(
+                                children: [
+                                  const Text('Mentions:'),
+                                  for (var mention in list[index].mentions)
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 8.0),
+                                      child: InkWell(
+                                        onTap: () {
+                                          if (mention.trigger == '#') {
+                                            context.pushNamed(
+                                              'view ticket',
+                                              pathParameters: {
+                                                'id': mention.extra['id']
+                                                    .toString(),
+                                              },
+                                            );
+                                          }
+                                        },
+                                        child: Text(
+                                          mention.text,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodySmall
+                                              ?.copyWith(
+                                                color: Colors.blue,
+                                              ),
+                                        ),
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            ]
                           ],
                         ),
                         trailing: Text(list[index].status),
-                        // TODO: something is happenning with GoRouter
+                        // TODO: something is happening with GoRouter
                         // when we use NoTransitionPage we are required to use pushNamed to get the previous route name
                         onTap: () => context.pushNamed(
                           'view ticket',

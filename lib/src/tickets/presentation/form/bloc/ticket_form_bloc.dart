@@ -1,11 +1,15 @@
+import 'dart:async';
+
 import 'package:bloc_practice/src/common/enums/bloc_mutations.dart';
 import 'package:bloc_practice/src/common/enums/form_modes.dart';
 import 'package:bloc_practice/src/common/exceptions/form_dirty_exception.dart';
 import 'package:bloc_practice/src/tickets/domain/base_tickets_repository.dart';
 import 'package:bloc_practice/src/tickets/domain/models/ticket.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:mention_field/mention_field.dart';
 
 part 'ticket_form_event.dart';
 part 'ticket_form_state.dart';
@@ -37,6 +41,11 @@ class TicketFormBloc extends Bloc<TicketFormEvent, TicketFormState> {
       if (event is LoadDetails) return _onLoadDetails(event, emit);
       if (event is LoadTicketHistory) return _onLoadTicketHistory(event, emit);
     }, transformer: sequential());
+    on<MentionsUpdated>(_onMentionsUpdated);
+  }
+
+  _onMentionsUpdated(MentionsUpdated event, _E emit) {
+    emit(state.success(event, state.data.withMentions(event.value)));
   }
 
   Future<void> _onLoadDetails(LoadDetails event, _E emit) async {

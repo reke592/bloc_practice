@@ -123,4 +123,20 @@ class TicketsMemoryRepository extends BaseTicketRepository {
       },
     );
   }
+
+  @override
+  Future<List<Ticket>> loadMentionableTickets(String pattern) async {
+    if (_tickets.isEmpty) {
+      final data = await rootBundle
+          .loadString('resource/data/tickets/stub_tickets.json');
+      _tickets.addAll(List<Map<String, dynamic>>.from(jsonDecode(data))
+          .map<Ticket>(Ticket.fromJson));
+    }
+    await Future.delayed(const Duration(seconds: 1));
+    final regex = RegExp(pattern, caseSensitive: false, dotAll: false);
+    return List<Ticket>.from(_tickets.where((element) =>
+        regex.hasMatch(element.title) ||
+        regex.hasMatch(element.customer) ||
+        regex.hasMatch(element.narration))).toList();
+  }
 }

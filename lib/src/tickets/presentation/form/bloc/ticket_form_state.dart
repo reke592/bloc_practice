@@ -6,6 +6,9 @@ class TicketFormState extends Equatable {
   final TicketFormEvent? action;
   final Object? error;
   final BlocMutation mutation;
+  final int mentionPrefixStart;
+  final String mentionPrefix;
+  final TextEditingController? editingController;
 
   const TicketFormState({
     required this.mode,
@@ -13,6 +16,9 @@ class TicketFormState extends Equatable {
     this.action,
     this.error,
     this.mutation = BlocMutation.initial,
+    this.mentionPrefixStart = 0,
+    this.mentionPrefix = '',
+    this.editingController,
   });
 
   @override
@@ -35,6 +41,9 @@ class TicketFormState extends Equatable {
     Ticket? data,
     Object? Function()? error,
     FormModes? mode,
+    int? mentionPrefixStart,
+    String? mentionPrefix,
+    TextEditingController? Function()? editingController,
   }) =>
       TicketFormState(
         action: action,
@@ -42,6 +51,11 @@ class TicketFormState extends Equatable {
         data: data ?? this.data,
         error: error != null ? error() : this.error,
         mode: mode ?? this.mode,
+        mentionPrefix: mentionPrefix ?? this.mentionPrefix,
+        mentionPrefixStart: mentionPrefixStart ?? this.mentionPrefixStart,
+        editingController: editingController != null
+            ? editingController()
+            : this.editingController,
       );
 
   /// common
