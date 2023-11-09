@@ -41,10 +41,10 @@ class TicketFormBloc extends Bloc<TicketFormEvent, TicketFormState> {
       if (event is LoadDetails) return _onLoadDetails(event, emit);
       if (event is LoadTicketHistory) return _onLoadTicketHistory(event, emit);
     }, transformer: sequential());
-    on<MentionsUpdated>(_onMentionsUpdated);
+    on<UpdateMentions>(_onMentionsUpdated);
   }
 
-  _onMentionsUpdated(MentionsUpdated event, _E emit) {
+  _onMentionsUpdated(UpdateMentions event, _E emit) {
     emit(state.success(event, state.data.withMentions(event.value)));
   }
 

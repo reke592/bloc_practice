@@ -60,9 +60,9 @@ class FormSave extends TicketFormEvent {}
 
 class FormEdit extends TicketFormEvent {}
 
-class MentionsUpdated extends TicketFormEvent {
+class UpdateMentions extends TicketFormEvent {
   final List<MentionRange> value;
-  const MentionsUpdated(this.value);
+  const UpdateMentions(this.value);
   @override
   List<Object> get props => [value];
 }

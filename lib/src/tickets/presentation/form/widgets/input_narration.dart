@@ -66,7 +66,7 @@ class InputNarration extends StatelessWidget {
               onMentionsUpdated: (value, mentions) {
                 context.read<TicketFormBloc>()
                   ..add(UpdateNarration(value))
-                  ..add(MentionsUpdated(mentions));
+                  ..add(UpdateMentions(mentions));
               },
               onChanged: !readOnly
                   ? (value) {

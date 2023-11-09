@@ -32,7 +32,7 @@ class TicketFormScreen extends StatelessWidget {
           }
           if (state.action is FormClose) {
             var prev = PreviousRouteObserver.value?.settings.name;
-            if (prev == 'view ticket' || prev == 'edit ticket') {
+            if (prev == 'view ticket' || prev == 'new ticket') {
               return context.pop();
             } else {
               return context.goNamed('ticket list');
