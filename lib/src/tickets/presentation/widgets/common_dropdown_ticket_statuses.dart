@@ -26,9 +26,6 @@ class CommonDropdownTicketStatuses extends StatelessWidget {
     return BlocBuilder<StatusOptionCubit, StatusOptionState>(
       builder: (context, state) {
         bool isLoading = parentIsLoading ?? state.isLoading;
-        if (state.isInitial) {
-          context.read<StatusOptionCubit>().loadList();
-        }
         return DropdownButton<String>(
           isDense: isDense,
           isExpanded: isExpanded,

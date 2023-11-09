@@ -12,9 +12,6 @@ import 'package:mention_field/mention_field.dart';
 class MentionFieldController extends TextEditingController {
   final Duration debounce;
 
-  /// focus node to attach in text field widget
-  final FocusNode focusNode = FocusNode();
-
   /// mention text color
   final Color mentionColor;
 
@@ -22,7 +19,7 @@ class MentionFieldController extends TextEditingController {
   final Map<String, MentionConfiguration> mentionTriggers;
 
   /// receives the [mentionTriggers] result for widget layer to call a [setState].
-  final void Function(String trigger, List<dynamic> mentionable)
+  final void Function(String trigger, Future<List<dynamic>> mentionable)
       onMentionTrigger;
 
   /// callback to receive updated mention list in controller
@@ -110,13 +107,13 @@ class MentionFieldController extends TextEditingController {
       _mentionKey = '';
       _mentionStart = -1;
       _mentionEnd = -1;
-      onMentionTrigger('', []);
+      onMentionTrigger('', Future.value([]));
     }
   }
 
   void addMention(Mentionable value) {
     if (_isMentioning) {
-      String mentionableText = value.mentionableText;
+      String mentionableText = '$_mentionKey${value.mentionableText}';
       final start = _mentionStart;
       final end = _mentionEnd;
       final mention = MentionRange(
@@ -128,7 +125,6 @@ class MentionFieldController extends TextEditingController {
       );
 
       clearMentionSelection();
-      focusNode.requestFocus();
 
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         final updated = text.replaceRange(start, end, mentionableText);
@@ -142,12 +138,16 @@ class MentionFieldController extends TextEditingController {
         _mentions.sort((a, b) => a.start.compareTo(b.start));
         // update text value
         text = updated;
-        // update selection to make sure we focus on the right position
-        selection = TextSelection(
-          baseOffset: mention.end,
-          extentOffset: mention.end,
-        );
+        // callback on mentions update
         onMentionsUpdated?.call(text, _mentions);
+
+        // update selection to make sure we focus the right position
+        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+          selection = TextSelection(
+            baseOffset: mention.end,
+            extentOffset: mention.end,
+          );
+        });
       });
     }
   }
@@ -159,7 +159,7 @@ class MentionFieldController extends TextEditingController {
       // debugPrint('-- $runtimeType check mentions to remove at position: $pos');
       _mentions
           .removeWhere((element) => element.start <= pos && element.end >= pos);
-      onMentionsUpdated?.call(text, _mentions);
+      // onMentionsUpdated?.call(text, _mentions);
     }
   }
 
@@ -199,20 +199,18 @@ class MentionFieldController extends TextEditingController {
         _mentionPattern = pattern;
         _activeConfig = mentionTriggers[_mentionKey]?.cast();
         _debouncer?.cancel();
-        _debouncer = Timer(debounce, () {
-          _activeConfig
-              ?.dataSource(pattern)
-              .then((mentionable) => onMentionTrigger(_mentionKey, mentionable))
-              .catchError((_) => onMentionTrigger('', []));
-        });
+        if (_activeConfig != null) {
+          _debouncer = Timer(debounce, () {
+            onMentionTrigger(_mentionKey, _activeConfig!.dataSource(pattern));
+          });
+        }
       }
-    } else {
-      /// delay execution to avoid widget rebuild conflicts
-      Future.microtask(clearMentionSelection);
     }
   }
 
   /// update mention range positions
+  ///
+  /// will remove mention if invalid position
   void _updateMentionPositions(int updates) {
     if (_mentions.isNotEmpty && value.selection.start > -1) {
       // debugPrint('-- $runtimeType check mention range update');
@@ -221,16 +219,14 @@ class MentionFieldController extends TextEditingController {
         for (var i = 0; i < _mentions.length; i++) {
           // debugPrint(
           //     '-- $runtimeType selection start: ${value.selection.start}, range start: ${_mentions[i].start}, updates: $updates');
-          if (updates > 0) {
-            if (_mentions[i].start >= value.selection.start - 1) {
-              _mentions[i] = _mentions[i].withRangeMovement(updates);
+          if (_mentions[i].start >= value.selection.start - 1) {
+            _mentions[i] = _mentions[i].withRangeMovement(updates);
+            if (_mentions[i].start < 0 ||
+                _mentions[i].end >= value.text.length) {
+              // debugPrint(
+              //     '-- $runtimeType removed invalid range: ${_mentions[i]}');
+              _mentions.remove(_mentions[i]);
             }
-            // debugPrint('-- $runtimeType update range: ${_mentions[i]}');
-          } else {
-            if (_mentions[i].start >= value.selection.start - 1) {
-              _mentions[i] = _mentions[i].withRangeMovement(updates);
-            }
-            // debugPrint('-- $runtimeType update range: ${_mentions[i]}');
           }
         }
       }
@@ -257,9 +253,16 @@ class MentionFieldController extends TextEditingController {
     // update previous length for the next updates result
     _previousLength = value.text.length;
 
-    _identifyMentionStart(updates);
-    _removeMention(updates);
-    _updateMentionPositions(updates);
+    if (updates != 0 && value.text.isNotEmpty) {
+      _identifyMentionStart(updates);
+      _removeMention(updates);
+      _updateMentionPositions(updates);
+    } else {
+      // cancel mentioning on selection movement
+      if (_isMentioning && (value.selection.start != _mentionEnd)) {
+        Future.microtask(clearMentionSelection);
+      }
+    }
 
     final mentionStyle = style?.merge(TextStyle(
       fontWeight: FontWeight.bold,

@@ -19,11 +19,11 @@ class MentionField extends StatefulWidget {
   final InputDecoration? decoration;
   final List<MentionRange> mentions;
   final String? text;
-  final int? minLines;
   final int? maxLines;
   final int? maxLength;
   final bool readOnly;
   final bool autofocus;
+  final Widget loadingIndicator;
 
   /// {@macro mention_field}
   const MentionField({
@@ -39,11 +39,11 @@ class MentionField extends StatefulWidget {
     this.decoration = const InputDecoration(),
     this.mentions = const [],
     this.text,
-    this.minLines,
     this.maxLines,
     this.maxLength,
     this.readOnly = false,
     this.autofocus = false,
+    this.loadingIndicator = const LinearProgressIndicator(),
   });
 
   @override
@@ -52,7 +52,7 @@ class MentionField extends StatefulWidget {
 
 class _MentionFieldState extends State<MentionField> {
   late final MentionFieldController _controller;
-  List<dynamic> _mentionable = [];
+  Future<List<dynamic>> _mentionable = Future.value([]);
 
   @override
   void initState() {
@@ -77,12 +77,12 @@ class _MentionFieldState extends State<MentionField> {
       children: [
         TextField(
           decoration: widget.decoration,
-          minLines: widget.minLines,
+          minLines: 1,
           maxLines: widget.maxLines,
           maxLength: widget.maxLength,
           readOnly: widget.readOnly,
           autofocus: widget.autofocus,
-          focusNode: _controller.focusNode,
+          // focusNode: _controller.focusNode,
           controller: _controller,
           onChanged: widget.onChanged,
           onTap: () {
@@ -101,19 +101,29 @@ class _MentionFieldState extends State<MentionField> {
             widget.onEditingComplete?.call();
           },
         ),
-        if (_controller.isMentioning &&
-            _mentionable.isNotEmpty &&
-            _controller.activeConfig != null)
+        if (_controller.isMentioning && _controller.activeConfig != null)
           ConstrainedBox(
             constraints: const BoxConstraints(maxHeight: 200),
-            child: ListView.builder(
-              itemCount: _mentionable.length,
-              itemBuilder: (context, index) {
-                return _controller.activeConfig!.cast().listItemBuilder(
-                      context,
-                      _mentionable[index],
-                      _controller.addMention,
-                    );
+            child: FutureBuilder(
+              future: _mentionable,
+              builder: (context, snapshot) {
+                final data = snapshot.data ?? [];
+                return Stack(
+                  children: [
+                    if (snapshot.connectionState == ConnectionState.waiting)
+                      widget.loadingIndicator,
+                    ListView.builder(
+                      itemCount: data.length,
+                      itemBuilder: (context, index) {
+                        return _controller.activeConfig!.cast().listItemBuilder(
+                              context,
+                              data[index],
+                              _controller.addMention,
+                            );
+                      },
+                    ),
+                  ],
+                );
               },
             ),
           ),

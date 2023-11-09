@@ -26,9 +26,6 @@ class CommonDropdownCustomers extends StatelessWidget {
     return BlocBuilder<CustomerOptionCubit, CustomerOptionState>(
       builder: (context, state) {
         bool isLoading = parentIsLoading ?? state.isLoading;
-        if (state.isInitial) {
-          context.read<CustomerOptionCubit>().loadList();
-        }
         return DropdownButton<String>(
           isDense: isDense,
           isExpanded: isExpanded,

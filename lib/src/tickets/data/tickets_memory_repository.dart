@@ -95,6 +95,12 @@ class TicketsMemoryRepository extends BaseTicketRepository {
 
   @override
   Future<Ticket> loadTicketDetails(TicketId id) async {
+    if (_tickets.isEmpty) {
+      final data = await rootBundle
+          .loadString('resource/data/tickets/stub_tickets.json');
+      _tickets.addAll(List<Map<String, dynamic>>.from(jsonDecode(data))
+          .map<Ticket>(Ticket.fromJson));
+    }
     return await Future.delayed(
       const Duration(seconds: 1),
       () {

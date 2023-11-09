@@ -99,6 +99,8 @@ abstract class Stylesheet {
     progressIndicatorTheme: ProgressIndicatorThemeData(
       color: white1,
       circularTrackColor: green1,
+      linearTrackColor: green1,
+      linearMinHeight: 1.25,
     ),
     radioTheme: RadioThemeData(
       fillColor: MaterialStateColor.resolveWith(

@@ -14,9 +14,8 @@ class ButtonCreate extends StatelessWidget {
         final tempId = TicketId.temporary(
             context.read<TicketListBloc>().state.tickets.length + 1);
         context.goNamed(
-          'edit ticket',
+          'new ticket',
           extra: tempId,
-          pathParameters: {'id': '$tempId'},
         );
       },
       icon: const Icon(Icons.create),

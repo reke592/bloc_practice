@@ -19,13 +19,11 @@ class InputNarration extends StatelessWidget {
           current.action is LoadDetails || current.action is FormEdit,
       builder: (context, state) {
         final readOnly = state.mode == FormModes.view;
-        MentionFieldController? controller;
         return Column(
           children: [
             MentionField(
               text: state.data.narration,
               readOnly: readOnly,
-              minLines: 5,
               maxLines: 5,
               decoration: const InputDecoration(label: Text('Narration')),
               mentions: state.data.mentions,

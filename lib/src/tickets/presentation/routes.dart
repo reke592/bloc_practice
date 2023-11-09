@@ -84,8 +84,8 @@ ShellRoute ticketsRouteConfiguration({
       ),
       GoRoute(
         parentNavigatorKey: shellKey,
-        name: 'edit ticket',
-        path: '$root/:id/edit',
+        name: 'new ticket',
+        path: '$root/new',
         redirect: invalidId(root),
         pageBuilder: (context, state) {
           final id = _idFromRouter(context, state);
