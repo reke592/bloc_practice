@@ -87,7 +87,7 @@ class Ticket extends Entity<TicketId> implements Mentionable {
       );
 
   factory Ticket.fromJson(Map<String, dynamic> json) => Ticket(
-        id: TicketId(value: json['id'], isTemporary: false),
+        id: TicketId(value: json['id'], isTemporary: json['new'] == true),
         category: json['category'],
         created: DateTime.tryParse('${json['created']}'),
         customer: json['customer'],
@@ -98,6 +98,18 @@ class Ticket extends Entity<TicketId> implements Mentionable {
             .map(MentionRange.fromJson)
             .toList(),
       );
+
+  Map<String, dynamic> toJson() => {
+        'new': id.isTemporary,
+        'id': id.value,
+        'category': category,
+        'created': created?.toIso8601String(),
+        'customer': customer,
+        'narration': narration,
+        'status': status,
+        'title': title,
+        'mentions': mentions.map((e) => e.toJson()).toList()
+      };
 
   Ticket setClient(String client) => copyWith(
         mutation: EntityMutation.modified,

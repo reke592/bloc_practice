@@ -1,16 +1,26 @@
-/// DTO model for mentions
+/// {@template mention_range}
+/// domain model for mentions
+///
+/// mentions are identifiable via position in string, it contains extra metadata for other ui widgets to consume.
+/// {@endtemplate}
 class MentionRange {
+  /// this trigger can be used to identify the functionality of this mention
   final String trigger;
+
+  /// substring position start
   final int start;
+
+  /// substring position end
   final int end;
-  final String text;
+
+  /// metadata to consume by other ui widgets
   final Map<String, dynamic> extra;
 
+  /// {@macro mention_range}
   const MentionRange({
     required this.trigger,
     required this.start,
     required this.end,
-    required this.text,
     required this.extra,
   });
 
@@ -24,14 +34,12 @@ class MentionRange {
         trigger: trigger,
         start: start ?? this.start,
         end: end ?? this.end,
-        text: text ?? this.text,
         extra: extra ?? this.extra,
       );
 
   MentionRange withRangeMovement(int updates) => copyWith(
         start: start + updates,
         end: end + updates,
-        text: text,
         extra: extra,
       );
 
@@ -39,7 +47,6 @@ class MentionRange {
         trigger: json['trigger'],
         start: json['start'],
         end: json['end'],
-        text: json['text'],
         extra: Map<String, dynamic>.from(json['extra']),
       );
 
@@ -47,9 +54,9 @@ class MentionRange {
         'trigger': trigger,
         'start': start,
         'end': end,
-        'text': text,
+        'extra': extra,
       };
 
   @override
-  String toString() => '$runtimeType ($trigger, $start, $end, $text, $extra)';
+  String toString() => '$runtimeType ($trigger, $start, $end, $extra)';
 }

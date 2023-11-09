@@ -126,7 +126,10 @@ class TicketListScreen extends StatelessWidget {
                                           }
                                         },
                                         child: Text(
-                                          mention.text,
+                                          list[index].narration.substring(
+                                                mention.start,
+                                                mention.end,
+                                              ),
                                           style: Theme.of(context)
                                               .textTheme
                                               .bodySmall

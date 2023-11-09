@@ -6,6 +6,7 @@ import 'package:bloc_practice/src/tickets/domain/base_tickets_repository.dart';
 import 'package:bloc_practice/src/tickets/domain/models/ticket.dart';
 import 'package:bloc_practice/src/tickets/domain/models/ticket_history.dart';
 import 'package:bloc_practice/src/tickets/domain/models/ticket_status.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 /// for testing purpose
@@ -62,6 +63,7 @@ class TicketsMemoryRepository extends BaseTicketRepository {
         if (index < 0) throw Exception('Not found');
         final updated = data.copyWith(mutation: EntityMutation.initial);
         _tickets[index] = updated;
+        debugPrint('-- $runtimeType updated: ${updated.toJson()}');
         return updated;
       },
     );

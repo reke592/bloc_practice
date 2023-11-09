@@ -98,6 +98,79 @@ class MentionFieldController extends TextEditingController {
     super.dispose();
   }
 
+  /// Builds [TextSpan] from current editing value.
+  ///
+  /// By default makes text in composing range appear as underlined. Descendants
+  /// can override this method to customize appearance of text.
+  @override
+  TextSpan buildTextSpan({
+    required BuildContext context,
+    TextStyle? style,
+    required bool withComposing,
+  }) {
+    assert(!value.composing.isValid ||
+        !withComposing ||
+        value.isComposingRangeValid);
+
+    // updates = (-1, 0, 1)
+    // delete < selection movement < append
+    int updates = value.text.length - _previousLength;
+    // update previous length for the next updates result
+    _previousLength = value.text.length;
+
+    if (updates != 0 && value.text.isNotEmpty) {
+      _identifyMentionStart(updates);
+      _removeMentionOnDeleteCharacter(updates);
+      _updateMentionPosition(updates);
+    } else {
+      // cancel mentioning on selection movement
+      if (_isMentioning && (value.selection.start != _mentionEnd)) {
+        Future.microtask(clearMentionSelection);
+      }
+      // clear all mentions when value text is empty
+      if (value.text.isEmpty && _mentions.isNotEmpty) {
+        _mentions.clear();
+        onMentionsUpdated?.call(value.text, _mentions);
+      }
+    }
+
+    final mentionStyle = style?.merge(TextStyle(
+      fontWeight: FontWeight.bold,
+      color: mentionColor,
+    ));
+
+    // render clickable textspans if and only if value text and mentions is not empty.
+    if (_mentions.isNotEmpty && value.text.isNotEmpty) {
+      int start = 0;
+      return TextSpan(
+        style: style,
+        children: <TextSpan>[
+          // plain text before first mention
+          TextSpan(text: text.substring(start, _mentions.first.start)),
+          for (var i = 0; i < _mentions.length; i++) ...[
+            TextSpan(
+              text: text.substring(_mentions[i].start, _mentions[i].end),
+              style: mentionStyle,
+              mouseCursor: SystemMouseCursors.click,
+              recognizer: TapGestureRecognizer()
+                ..onTap = () =>
+                    mentionTriggers[_mentions[i].trigger]?.onTap(_mentions[i]),
+            ),
+            // plain text in between mentions
+            if (i + 1 < _mentions.length)
+              TextSpan(
+                text: text.substring(_mentions[i].end, _mentions[i + 1].start),
+              ),
+          ],
+          // plain text after last mention
+          TextSpan(text: text.substring(_mentions.last.end, text.length)),
+        ],
+      );
+    } else {
+      return TextSpan(style: style, text: text);
+    }
+  }
+
   /// reset mention selection
   void clearMentionSelection() {
     if (_isMentioning) {
@@ -120,7 +193,6 @@ class MentionFieldController extends TextEditingController {
         trigger: _mentionKey,
         start: _mentionStart,
         end: _mentionStart + mentionableText.length,
-        text: mentionableText,
         extra: _activeConfig!.cast().extraValue(value),
       );
 
@@ -130,7 +202,7 @@ class MentionFieldController extends TextEditingController {
         final updated = text.replaceRange(start, end, mentionableText);
         if (_mentions.isNotEmpty) {
           final lengthUpdates = updated.length - text.length;
-          _updateMentionPositions(lengthUpdates);
+          _updateMentionPosition(lengthUpdates);
         }
         // append mention data
         _mentions.add(mention);
@@ -149,17 +221,6 @@ class MentionFieldController extends TextEditingController {
           );
         });
       });
-    }
-  }
-
-  /// remove mention if selection is in range and length updates -1
-  void _removeMention(int updates) {
-    if (updates < 0) {
-      int pos = value.selection.start;
-      // debugPrint('-- $runtimeType check mentions to remove at position: $pos');
-      _mentions
-          .removeWhere((element) => element.start <= pos && element.end >= pos);
-      // onMentionsUpdated?.call(text, _mentions);
     }
   }
 
@@ -211,7 +272,7 @@ class MentionFieldController extends TextEditingController {
   /// update mention range positions
   ///
   /// will remove mention if invalid position
-  void _updateMentionPositions(int updates) {
+  void _updateMentionPosition(int updates) {
     if (_mentions.isNotEmpty && value.selection.start > -1) {
       // debugPrint('-- $runtimeType check mention range update');
       // update mention range if and only if text value has changed
@@ -233,71 +294,14 @@ class MentionFieldController extends TextEditingController {
     }
   }
 
-  /// Builds [TextSpan] from current editing value.
-  ///
-  /// By default makes text in composing range appear as underlined. Descendants
-  /// can override this method to customize appearance of text.
-  @override
-  TextSpan buildTextSpan({
-    required BuildContext context,
-    TextStyle? style,
-    required bool withComposing,
-  }) {
-    assert(!value.composing.isValid ||
-        !withComposing ||
-        value.isComposingRangeValid);
-
-    // updates = (-1, 0, 1)
-    // delete < selection movement < append
-    int updates = value.text.length - _previousLength;
-    // update previous length for the next updates result
-    _previousLength = value.text.length;
-
-    if (updates != 0 && value.text.isNotEmpty) {
-      _identifyMentionStart(updates);
-      _removeMention(updates);
-      _updateMentionPositions(updates);
-    } else {
-      // cancel mentioning on selection movement
-      if (_isMentioning && (value.selection.start != _mentionEnd)) {
-        Future.microtask(clearMentionSelection);
-      }
-    }
-
-    final mentionStyle = style?.merge(TextStyle(
-      fontWeight: FontWeight.bold,
-      color: mentionColor,
-    ));
-
-    // render textspans
-    if (_mentions.isNotEmpty) {
-      int start = 0;
-      return TextSpan(
-        style: style,
-        children: <TextSpan>[
-          // plain text before first mention
-          TextSpan(text: text.substring(start, _mentions.first.start)),
-          for (var i = 0; i < _mentions.length; i++) ...[
-            TextSpan(
-              text: text.substring(_mentions[i].start, _mentions[i].end),
-              style: mentionStyle,
-              mouseCursor: SystemMouseCursors.click,
-              recognizer: TapGestureRecognizer()
-                ..onTap = () =>
-                    mentionTriggers[_mentions[i].trigger]?.onTap(_mentions[i]),
-            ),
-            // plain text in between mentions
-            if (i + 1 < _mentions.length)
-              TextSpan(
-                text: text.substring(_mentions[i].end, _mentions[i + 1].start),
-              ),
-          ],
-          // plain text after last mention
-          TextSpan(text: text.substring(_mentions.last.end, text.length)),
-        ],
-      );
-    } else {
-      return TextSpan(style: style, text: text);
+  /// remove mention if selection is in range and length updates -1
+  void _removeMentionOnDeleteCharacter(int updates) {
+    if (updates < 0) {
+      int pos = value.selection.start;
+      // debugPrint('-- $runtimeType check mentions to remove at position: $pos');
+      _mentions
+          .removeWhere((element) => element.start <= pos && element.end >= pos);
+      // onMentionsUpdated?.call(text, _mentions);
     }
   }
 }
