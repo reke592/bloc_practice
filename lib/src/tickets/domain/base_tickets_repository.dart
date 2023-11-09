@@ -11,8 +11,8 @@ import 'models/ticket.dart';
 abstract class BaseTicketRepository extends ChangeNotifier {
   final createdTicket = PublishSubject<Ticket>();
   final updatedTicket = PublishSubject<Ticket>();
-  final loadedTicketStatus = BehaviorSubject<List<TicketStatus>>();
-  final loadedCustomers = BehaviorSubject<List<String>>();
+  final loadedTicketStatus = PublishSubject<List<TicketStatus>>();
+  final loadedCustomers = PublishSubject<List<String>>();
 
   Stream<Ticket> getCreated() => createdTicket.stream.asBroadcastStream();
   Stream<Ticket> getUpdated() => updatedTicket.stream.asBroadcastStream();

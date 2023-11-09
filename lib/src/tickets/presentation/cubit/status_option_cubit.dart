@@ -47,5 +47,6 @@ class StatusOptionCubit extends Cubit<StatusOptionState> {
       mutation: BlocMutation.error,
       error: () => error,
     ));
+    addError(error);
   }
 }

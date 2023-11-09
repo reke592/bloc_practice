@@ -48,5 +48,6 @@ class CustomerOptionCubit extends Cubit<CustomerOptionState> {
       mutation: BlocMutation.error,
       error: () => error,
     ));
+    addError(error);
   }
 }
