@@ -19,63 +19,74 @@ class InputNarration extends StatelessWidget {
           current.action is LoadDetails || current.action is FormEdit,
       builder: (context, state) {
         final readOnly = state.mode == FormModes.view;
-        return Column(
-          children: [
-            MentionField(
-              text: state.data.narration,
-              readOnly: readOnly,
-              maxLines: 5,
-              decoration: const InputDecoration(label: Text('Narration')),
-              mentions: state.data.mentions,
-              onInit: (controller) {
-                controller = controller;
+        return MentionField(
+          text: state.data.narration,
+          readOnly: readOnly,
+          maxLines: 5,
+          decoration: const InputDecoration(label: Text('Narration')),
+          mentions: state.data.mentions,
+          onInit: (controller) {
+            controller = controller;
+          },
+          mentionTriggers: {
+            '#': MentionConfiguration<Ticket>(
+              dataSource:
+                  context.read<BaseTicketRepository>().loadMentionableTickets,
+              extraValue: (value) => {
+                'id': value.id,
               },
-              mentionTriggers: {
-                '#': MentionConfiguration<Ticket>(
-                  dataSource: context
-                      .read<BaseTicketRepository>()
-                      .loadMentionableTickets,
-                  extraValue: (value) => {
-                    'id': value.id,
-                  },
-                  listItemBuilder: (context, value, mention) {
-                    return ListTile(
-                      title: Text(value.title),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(value.narration),
-                          Text(value.customer),
-                        ],
+              listItemBuilder: (context, value, mention) {
+                return Container(
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                  padding: const EdgeInsets.all(8),
+                  child: TextButton(
+                    onPressed: () => mention(value),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        '${value.title}'
+                        '\n${value.narration}'
+                        '\n${value.customer}',
+                        textAlign: TextAlign.left,
                       ),
-                      onTap: () {
-                        mention(value);
-                      },
-                    );
-                  },
-                  onTap: (mention) {
-                    context.pushNamed(
-                      'view ticket',
-                      pathParameters: {
-                        'id': mention.extra['id'].toString(),
-                      },
-                    );
-                  },
-                ),
+                    ),
+                  ),
+                );
+                // return ListTile(
+                //   title: Text(value.title),
+                //   subtitle: Column(
+                //     crossAxisAlignment: CrossAxisAlignment.start,
+                //     children: [
+                //       Text(value.narration),
+                //       Text(value.customer),
+                //     ],
+                //   ),
+                //   onTap: () {
+                //     mention(value);
+                //   },
+                // );
               },
-              onMentionsUpdated: (value, mentions) {
-                context.read<TicketFormBloc>()
-                  ..add(UpdateNarration(value))
-                  ..add(UpdateMentions(mentions));
+              onTap: (mention) {
+                context.pushNamed(
+                  'view ticket',
+                  pathParameters: {
+                    'id': mention.extra['id'].toString(),
+                  },
+                );
               },
-              onChanged: !readOnly
-                  ? (value) {
-                      bloc.add(UpdateNarration(value));
-                    }
-                  : null,
-            ).addShimmer(state.isLoading),
-          ],
-        );
+            ),
+          },
+          onMentionsUpdated: (value, mentions) {
+            context.read<TicketFormBloc>()
+              ..add(UpdateNarration(value))
+              ..add(UpdateMentions(mentions));
+          },
+          onChanged: !readOnly
+              ? (value) {
+                  bloc.add(UpdateNarration(value));
+                }
+              : null,
+        ).addShimmer(state.isLoading);
       },
     );
   }

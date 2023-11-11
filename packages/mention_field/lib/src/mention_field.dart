@@ -7,23 +7,60 @@ import 'package:mention_field/src/mention_range.dart';
 /// [TextField] with mention features
 /// {@endtemplate}
 class MentionField extends StatefulWidget {
+  /// {@macro mention_triggers}
   final Map<String, MentionConfiguration> mentionTriggers;
+
+  /// on init hook to get a reference of controller instance
   final void Function(MentionFieldController controller)? onInit;
+
+  /// {@macro on_mention_updated}
   final void Function(String value, List<MentionRange> mentions)?
       onMentionsUpdated;
+
+  /// [TextField] properties
   final void Function(String value)? onChanged;
+
+  /// [TextField] properties
   final void Function()? onTap;
+
+  /// [TextField] properties
   final void Function(PointerDownEvent)? onTapOutside;
+
+  /// [TextField] properties
   final void Function(String)? onSubmitted;
+
+  /// [TextField] properties
   final void Function()? onEditingComplete;
+
+  /// [TextField] properties
   final InputDecoration? decoration;
+
+  /// {@macro mentions}
   final List<MentionRange> mentions;
+
+  /// initial text value for [MentionFieldController]
   final String? text;
+
+  /// [TextField] properties
   final int? maxLines;
+
+  /// [TextField] properties
   final int? maxLength;
+
+  /// [TextField] properties
   final bool readOnly;
+
+  /// [TextField] properties
   final bool autofocus;
+
+  /// loading indicator widget while waiting for suggestion snapshot
   final Widget loadingIndicator;
+
+  /// debounce duration to throtle call for suggestion datasource
+  final Duration debounce;
+
+  /// max height constraint for suggestion box
+  final double suggestionMaxHeight;
 
   /// {@macro mention_field}
   const MentionField({
@@ -44,6 +81,8 @@ class MentionField extends StatefulWidget {
     this.readOnly = false,
     this.autofocus = false,
     this.loadingIndicator = const LinearProgressIndicator(),
+    this.debounce = const Duration(milliseconds: 200),
+    this.suggestionMaxHeight = 200,
   });
 
   @override
@@ -60,6 +99,7 @@ class _MentionFieldState extends State<MentionField> {
       text: widget.text,
       mentions: widget.mentions,
       mentionTriggers: widget.mentionTriggers,
+      debounce: widget.debounce,
       onMentionsUpdated: widget.onMentionsUpdated,
       onMentionTrigger: (mentionKey, mentionable) {
         setState(() {
@@ -74,6 +114,7 @@ class _MentionFieldState extends State<MentionField> {
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
         TextField(
           decoration: widget.decoration,
@@ -103,24 +144,29 @@ class _MentionFieldState extends State<MentionField> {
         ),
         if (_controller.isMentioning && _controller.activeConfig != null)
           ConstrainedBox(
-            constraints: const BoxConstraints(maxHeight: 200),
+            constraints: BoxConstraints(maxHeight: widget.suggestionMaxHeight),
             child: FutureBuilder(
               future: _mentionable,
               builder: (context, snapshot) {
                 final data = snapshot.data ?? [];
-                return Stack(
+                return Column(
                   children: [
                     if (snapshot.connectionState == ConnectionState.waiting)
                       widget.loadingIndicator,
-                    ListView.builder(
-                      itemCount: data.length,
-                      itemBuilder: (context, index) {
-                        return _controller.activeConfig!.cast().listItemBuilder(
-                              context,
-                              data[index],
-                              _controller.addMention,
-                            );
-                      },
+                    Expanded(
+                      child: ListView.builder(
+                        itemCount: data.length,
+                        shrinkWrap: true,
+                        itemBuilder: (context, index) {
+                          return _controller.activeConfig!
+                              .cast()
+                              .listItemBuilder(
+                                context,
+                                data[index],
+                                _controller.addMention,
+                              );
+                        },
+                      ),
                     ),
                   ],
                 );

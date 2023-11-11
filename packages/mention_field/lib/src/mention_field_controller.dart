@@ -15,14 +15,18 @@ class MentionFieldController extends TextEditingController {
   /// mention text color
   final Color mentionColor;
 
+  /// {@template mention_triggers}
   /// mention datasource based on String trigger
+  /// {@endtemplate}
   final Map<String, MentionConfiguration> mentionTriggers;
 
   /// receives the [mentionTriggers] result for widget layer to call a [setState].
   final void Function(String trigger, Future<List<dynamic>> mentionable)
       onMentionTrigger;
 
+  /// {@template on_mention_updated}
   /// callback to receive updated mention list in controller
+  /// {@endtemplate}
   final void Function(String value, List<MentionRange> mentions)?
       onMentionsUpdated;
 
@@ -35,12 +39,9 @@ class MentionFieldController extends TextEditingController {
   bool get isMentioning => _isMentioning;
 
   /// {@template mentions}
-  /// list of mention position in controller text value
+  /// list of existing mention positions in given text value
   /// {@endtemplate}
   final List<MentionRange> _mentions;
-
-  /// {@macro mentions}
-  List<MentionRange> get mentions => _mentions;
 
   /// {@template mention_key}
   /// key to call in [mentionTriggers]
@@ -87,7 +88,7 @@ class MentionFieldController extends TextEditingController {
     this.mentionColor = Colors.blue,
     List<MentionRange> mentions = const [],
     String? text,
-  })  : _mentions = List.from(mentions),
+  })  : _mentions = List.of(mentions),
         super.fromValue(
           text != null ? TextEditingValue(text: text) : TextEditingValue.empty,
         );
@@ -298,7 +299,7 @@ class MentionFieldController extends TextEditingController {
   void _removeMentionOnDeleteCharacter(int updates) {
     if (updates < 0) {
       int pos = value.selection.start;
-      debugPrint('-- $runtimeType check mentions to remove at position: $pos');
+      // debugPrint('-- $runtimeType check mentions to remove at position: $pos');
       _mentions
           .removeWhere((element) => element.start <= pos && element.end >= pos);
       onMentionsUpdated?.call(text, _mentions);
