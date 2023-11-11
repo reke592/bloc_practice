@@ -199,7 +199,12 @@ class MentionFieldController extends TextEditingController {
       clearMentionSelection();
 
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        // append space character at the end to prevent textspan gesure recognizer occupying the remaining space
+        bool addSpace = end == text.length;
+        mentionableText += addSpace ? ' ' : '';
+        // complete the mention pattern
         final updated = text.replaceRange(start, end, mentionableText);
+        // adjust existing mention positions
         if (_mentions.isNotEmpty) {
           final lengthUpdates = updated.length - text.length;
           _updateMentionPosition(lengthUpdates);
@@ -214,10 +219,11 @@ class MentionFieldController extends TextEditingController {
         onMentionsUpdated?.call(text, _mentions);
 
         // update selection to make sure we focus the right position
+        int targetSelection = mention.end + (addSpace ? 1 : 0);
         WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
           selection = TextSelection(
-            baseOffset: mention.end,
-            extentOffset: mention.end,
+            baseOffset: targetSelection,
+            extentOffset: targetSelection,
           );
         });
       });
@@ -282,12 +288,6 @@ class MentionFieldController extends TextEditingController {
           //     '-- $runtimeType selection start: ${value.selection.start}, range start: ${_mentions[i].start}, updates: $updates');
           if (_mentions[i].start >= value.selection.start - 1) {
             _mentions[i] = _mentions[i].withRangeMovement(updates);
-            if (_mentions[i].start < 0 ||
-                _mentions[i].end >= value.text.length) {
-              // debugPrint(
-              //     '-- $runtimeType removed invalid range: ${_mentions[i]}');
-              _mentions.remove(_mentions[i]);
-            }
           }
         }
       }
@@ -298,10 +298,10 @@ class MentionFieldController extends TextEditingController {
   void _removeMentionOnDeleteCharacter(int updates) {
     if (updates < 0) {
       int pos = value.selection.start;
-      // debugPrint('-- $runtimeType check mentions to remove at position: $pos');
+      debugPrint('-- $runtimeType check mentions to remove at position: $pos');
       _mentions
           .removeWhere((element) => element.start <= pos && element.end >= pos);
-      // onMentionsUpdated?.call(text, _mentions);
+      onMentionsUpdated?.call(text, _mentions);
     }
   }
 }
