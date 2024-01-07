@@ -1,4 +1,0 @@
-enum FormModes {
-  edit,
-  view,
-}

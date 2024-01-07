@@ -1,47 +1,43 @@
-import 'dart:ui';
-
-import 'package:bloc_practice/src/router.dart';
-import 'package:bloc_practice/src/stylesheet.dart';
+import 'package:ale/src/features/recipe/domain/repositories/food_recipe_repository.dart';
+import 'package:ale/src/locator.dart';
+import 'package:ale/src/ui/behaviors/app_scroll_behavior.dart';
+import 'package:ale/src/ui/observers/app_bloc_observer.dart';
+import 'package:ale/src/router.dart';
+import 'package:ale/src/ui/themes/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 
-import 'src/common/observers/app_observer.dart';
-
-class CustomScroll extends ScrollBehavior {
-  @override
-  Set<PointerDeviceKind> get dragDevices => <PointerDeviceKind>{
-        PointerDeviceKind.touch,
-        PointerDeviceKind.stylus,
-        PointerDeviceKind.invertedStylus,
-        PointerDeviceKind.trackpad,
-        PointerDeviceKind.mouse,
-        // The VoiceAccess sends pointer events with unknown type when scrolling
-        // scrollables.
-        PointerDeviceKind.unknown,
-      };
-}
-
-void main() {
-  Bloc.observer = AppObserver();
+void main() async {
+  Bloc.observer = AppBlocObserver();
+  WidgetsFlutterBinding.ensureInitialized();
+  initStandardUsecases();
   runApp(MyApp(
-    routerConfig: router,
+    router: AppRouter(initialLocation: '/recipe'),
   ));
 }
 
 class MyApp extends StatelessWidget {
-  final RouterConfig<Object> routerConfig;
+  final AppRouter router;
   const MyApp({
     super.key,
-    required this.routerConfig,
+    required this.router,
   });
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      title: 'Bloc Practice',
-      theme: Stylesheet.mainTheme,
-      routerConfig: routerConfig,
-      scrollBehavior: CustomScroll(),
+    return MultiProvider(
+      providers: [
+        RepositoryProvider<FoodRecipeRepository>(
+          create: (context) => locator<FoodRecipeRepository>(),
+        ),
+      ],
+      child: MaterialApp.router(
+        title: 'Ale',
+        theme: AppTheme().theme,
+        routerConfig: router.config,
+        scrollBehavior: AppScrollBehavior(),
+      ),
     );
   }
 }
