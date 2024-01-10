@@ -28,4 +28,10 @@ class FoodRecipe {
           description: 'description',
           steps: const [],
         );
+
+  /// list of all ingredients from cooking steps
+  List<Ingredient> get allIngredients => steps.fold(
+        <Ingredient>[],
+        (list, step) => step.active ? [...list, ...step.ingredients] : list,
+      );
 }

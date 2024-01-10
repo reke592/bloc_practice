@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:ale/src/core/typedefs.dart';
 import 'package:ale/src/features/recipe/data/models/cooking_step_model.dart';
-import 'package:ale/src/features/recipe/data/models/ingredient_model.dart';
 import 'package:ale/src/features/recipe/domain/entities/food_recipe.dart';
 
 /// {@template food_recipe}
@@ -52,13 +51,5 @@ class FoodRecipeModel extends FoodRecipe {
         serving: serving ?? this.serving,
         steps: steps ?? this.steps,
         description: description ?? this.description,
-      );
-
-  /// list of all ingredients from cooking steps
-  List<IngredientModel> get allIngredients => steps.fold(
-        <IngredientModel>[],
-        (list, step) => step.active
-            ? [...list, ...(step.ingredients.cast<IngredientModel>())]
-            : list,
       );
 }

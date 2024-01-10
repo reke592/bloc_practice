@@ -1,4 +1,3 @@
-import 'package:ale/src/features/recipe/data/models/cooking_step_model.dart';
 import 'package:ale/src/features/recipe/presentation/bloc/recipe_view_bloc.dart';
 import 'package:ale/src/features/recipe/presentation/recipe_view/widgets/step_list_tile.dart';
 import 'package:flutter/material.dart';
@@ -11,12 +10,12 @@ class StepListView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<RecipeViewBloc, RecipeViewState>(
       buildWhen: (_, current) =>
-          current.action is AddStep || current.action is UpdateStep,
+          current.action is SetRecipeViewModel ||
+          current.action is AddStep ||
+          current.action is UpdateStep,
       builder: (context, state) {
-        final steps = state.data.steps
-            .cast<CookingStepModel>()
-            .where((element) => element.active)
-            .toList();
+        final steps =
+            state.data.steps.where((element) => element.active).toList();
         return Column(
           children: [
             for (var i = 0; i < steps.length; i++)

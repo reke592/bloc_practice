@@ -9,9 +9,9 @@ class EditCookingStepState extends Equatable {
   final Object? error;
 
   const EditCookingStepState({
-    required this.recipe,
-    required this.data,
-    required this.isNew,
+    this.recipe = const FoodRecipe.empty(),
+    this.data = const CookingStep.empty(),
+    this.isNew = true,
     this.mutation = BlocMutation.initial,
     this.action,
     this.error,
@@ -29,14 +29,16 @@ class EditCookingStepState extends Equatable {
     required EditCookingStepEvent action,
     required BlocMutation mutation,
     Object? Function()? error,
-    CookingStepModel? data,
+    FoodRecipe? recipe,
+    CookingStep? data,
+    bool? isNew,
   }) =>
       EditCookingStepState(
         action: action,
         mutation: mutation,
-        isNew: isNew,
+        isNew: isNew ?? this.isNew,
         error: error != null ? error() : this.error,
-        recipe: recipe,
+        recipe: recipe ?? this.recipe,
         data: data ?? this.data,
       );
 

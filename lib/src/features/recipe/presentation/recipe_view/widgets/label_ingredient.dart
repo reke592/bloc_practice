@@ -1,10 +1,10 @@
-import 'package:ale/src/features/recipe/data/models/ingredient_model.dart';
+import 'package:ale/src/features/recipe/domain/entities/food_recipe.dart';
 import 'package:ale/src/features/recipe/presentation/bloc/recipe_view_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class LabelIngredient extends StatelessWidget {
-  final IngredientModel ingredient;
+  final Ingredient ingredient;
   const LabelIngredient({
     super.key,
     required this.ingredient,

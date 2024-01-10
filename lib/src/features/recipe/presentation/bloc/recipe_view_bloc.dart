@@ -16,11 +16,11 @@ part 'recipe_view_state.dart';
 
 class RecipeViewBloc extends Bloc<RecipeViewEvent, RecipeViewState> {
   RecipeViewBloc({
-    required FoodRecipeModel data,
     required FoodRecipeRepository repo,
     required this.saveRecipe,
   })  : _repo = repo,
-        super(RecipeViewState(data: data)) {
+        super(const RecipeViewState()) {
+    on<SetRecipeViewModel>(_onSetRecipeViewModel);
     on<SetCompletedStep>(_onSetCompletedStep);
     on<ChangeRecipeDetails>(_onChangeRecipeDetails);
     on<AddStep>(_onAddStep);
@@ -64,6 +64,17 @@ class RecipeViewBloc extends Bloc<RecipeViewEvent, RecipeViewState> {
     return super.close();
   }
 
+  FutureOr<void> _onSetRecipeViewModel(
+    SetRecipeViewModel event,
+    Emitter<RecipeViewState> emit,
+  ) {
+    emit(state.copyWith(
+      action: event,
+      mutation: BlocMutation.success,
+      data: event.data,
+    ));
+  }
+
   FutureOr<void> _onSetCompletedStep(
     SetCompletedStep event,
     Emitter<RecipeViewState> emit,
@@ -102,17 +113,6 @@ class RecipeViewBloc extends Bloc<RecipeViewEvent, RecipeViewState> {
       (error) => emit(state.failure(event, error.failureMessage)),
       (data) => emit(state.success(event, data)),
     );
-    // try {
-    //   emit(state.loading(event));
-    //   final data = await _repo.saveRecipe(state.data.copyWith(
-    //     name: event.name,
-    //     description: event.description,
-    //     serving: event.servings,
-    //   ));
-    //   emit(state.success(event, data));
-    // } catch (error) {
-    //   emit(state.failure(event, error));
-    // }
   }
 
   FutureOr<void> _onAddStep(

@@ -1,4 +1,3 @@
-import 'package:ale/src/features/recipe/data/models/ingredient_model.dart';
 import 'package:ale/src/features/recipe/presentation/bloc/edit_cooking_step_bloc.dart';
 import 'package:ale/src/features/recipe/presentation/dialogs/ingredient_dialog.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +26,7 @@ class IngredientListView extends StatelessWidget {
                     onPressed: () {
                       context
                           .read<EditCookingStepBloc>()
-                          .add(RemoveIngredient(item as IngredientModel));
+                          .add(RemoveIngredient(item));
                     },
                     icon: const Icon(Icons.delete),
                   ),
@@ -37,7 +36,7 @@ class IngredientListView extends StatelessWidget {
                         context: context,
                         builder: (dialogContext) {
                           return IngredientDialog(
-                            value: item as IngredientModel,
+                            value: item,
                           );
                         },
                       ).then((result) {
@@ -45,7 +44,7 @@ class IngredientListView extends StatelessWidget {
                           context
                               .read<EditCookingStepBloc>()
                               .add(UpdateIngredient(
-                                oldValue: item as IngredientModel,
+                                oldValue: item,
                                 newValue: result.value,
                               ));
                         }

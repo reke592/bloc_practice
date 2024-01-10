@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:ale/src/commons/enums/bloc_mutation.dart';
-import 'package:ale/src/features/recipe/data/models/food_recipe_model.dart';
 import 'package:ale/src/features/recipe/domain/entities/food_recipe.dart';
 import 'package:ale/src/features/recipe/domain/recipe_domain_event.dart';
 import 'package:ale/src/features/recipe/domain/repositories/food_recipe_repository.dart';
@@ -30,7 +29,7 @@ class RecipeListBloc extends Bloc<RecipeListEvent, RecipeListState> {
     on<ReplaceExistingItem>(_onReplaceExistingItem);
     _domainEventListener = _repo.getDomainEvents().listen((event) {
       if (event is RecipeDetailsUpdated && state.action is! NewRecipe) {
-        add(ReplaceExistingItem(event.value as FoodRecipeModel));
+        add(ReplaceExistingItem(event.value));
       } else {
         // TODO: optimize
         add(const LoadFoodRecipes());
@@ -58,7 +57,7 @@ class RecipeListBloc extends Bloc<RecipeListEvent, RecipeListState> {
     final result = await getAllRecipes();
     result.fold(
       (error) => emit(state.failed(event, error.failureMessage)),
-      (data) => emit(state.success(event, data.cast<FoodRecipeModel>())),
+      (data) => emit(state.success(event, data)),
     );
     // try {
     //   emit(state.loading(event));
@@ -87,7 +86,7 @@ class RecipeListBloc extends Bloc<RecipeListEvent, RecipeListState> {
       (data) => emit(
         state.success(
           event,
-          List<FoodRecipeModel>.from(state.data)..add(data as FoodRecipeModel),
+          List.from(state.data)..add(data),
         ),
       ),
     );
@@ -152,7 +151,7 @@ class RecipeListBloc extends Bloc<RecipeListEvent, RecipeListState> {
     result.fold(
       (error) => emit(state.failed(event, error.failureMessage)),
       (_) {
-        final updated = List<FoodRecipeModel>.from(state.data);
+        final updated = List<FoodRecipe>.from(state.data);
         for (var item in state.selected) {
           updated.removeWhere((element) => element.id == item.id);
         }
@@ -189,7 +188,7 @@ class RecipeListBloc extends Bloc<RecipeListEvent, RecipeListState> {
     ReplaceExistingItem event,
     Emitter<RecipeListState> emit,
   ) {
-    final updated = List<FoodRecipeModel>.from(state.data);
+    final updated = List<FoodRecipe>.from(state.data);
     final index = updated.indexWhere((element) => element.id == event.value.id);
     if (index > -1) {
       updated[index] = event.value;

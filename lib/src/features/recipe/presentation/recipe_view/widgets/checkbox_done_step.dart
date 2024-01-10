@@ -1,4 +1,4 @@
-import 'package:ale/src/features/recipe/data/models/cooking_step_model.dart';
+import 'package:ale/src/features/recipe/domain/entities/food_recipe.dart';
 import 'package:ale/src/features/recipe/presentation/bloc/recipe_view_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,7 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class CheckboxDoneStep extends StatelessWidget {
   final int number;
   final int total;
-  final CookingStepModel step;
+  final CookingStep step;
 
   const CheckboxDoneStep({
     super.key,
@@ -32,7 +32,7 @@ class CheckboxDoneStep extends StatelessWidget {
               value: state.completed.contains(index),
               onChanged: (value) {
                 context.read<RecipeViewBloc>().add(SetCompletedStep(
-                      step as CookingStepModel,
+                      step,
                       value == true,
                     ));
               },

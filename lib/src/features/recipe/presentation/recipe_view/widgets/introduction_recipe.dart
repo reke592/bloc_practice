@@ -12,7 +12,9 @@ class IntroductionRecipe extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<RecipeViewBloc, RecipeViewState>(
-      buildWhen: (_, current) => current.action is ChangeRecipeDetails,
+      buildWhen: (_, current) =>
+          current.action is SetRecipeViewModel ||
+          current.action is ChangeRecipeDetails,
       builder: (context, state) {
         return Column(
           children: [

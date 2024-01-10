@@ -7,6 +7,19 @@ sealed class EditCookingStepEvent extends Equatable {
   List<Object?> get props => [];
 }
 
+class SetEditCookingStepViewModel extends EditCookingStepEvent {
+  final FoodRecipe recipe;
+  final CookingStep step;
+  final bool isNew;
+  const SetEditCookingStepViewModel({
+    required this.recipe,
+    required this.step,
+    required this.isNew,
+  });
+  @override
+  List<Object?> get props => [recipe, step, isNew];
+}
+
 class ChangeDuration extends EditCookingStepEvent {
   final int? hours;
   final int? minutes;

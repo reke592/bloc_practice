@@ -1,4 +1,4 @@
-import 'package:ale/src/features/recipe/data/models/food_recipe_model.dart';
+import 'package:ale/src/features/recipe/domain/entities/food_recipe.dart';
 import 'package:ale/src/ui/themes/app_theme.dart';
 import 'package:flutter/material.dart';
 
@@ -15,7 +15,7 @@ class RecipeDescriptionDialogResult {
 }
 
 class RecipeDescriptionDialog extends StatelessWidget {
-  final FoodRecipeModel? data;
+  final FoodRecipe? data;
 
   const RecipeDescriptionDialog({
     super.key,

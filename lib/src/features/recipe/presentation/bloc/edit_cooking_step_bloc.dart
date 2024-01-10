@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:ale/src/commons/enums/bloc_mutation.dart';
 import 'package:ale/src/features/recipe/data/models/cooking_step_model.dart';
-import 'package:ale/src/features/recipe/data/models/food_recipe_model.dart';
 import 'package:ale/src/features/recipe/data/models/ingredient_model.dart';
 import 'package:ale/src/features/recipe/domain/entities/food_recipe.dart';
 import 'package:ale/src/features/recipe/domain/repositories/food_recipe_repository.dart';
@@ -19,15 +18,9 @@ class EditCookingStepBloc
     extends Bloc<EditCookingStepEvent, EditCookingStepState> {
   EditCookingStepBloc({
     required FoodRecipeRepository repo,
-    required FoodRecipeModel recipe,
-    required CookingStepModel data,
     required this.saveCookingStep,
     required this.deleteCookingStep,
-  }) : super(EditCookingStepState(
-          recipe: recipe,
-          data: data,
-          isNew: data.number > recipe.steps.length,
-        )) {
+  }) : super(const EditCookingStepState()) {
     on<ChangeDuration>(_onChangeDuration, transformer: (events, mapper) {
       return events
           .debounceTime(const Duration(milliseconds: 300))
@@ -38,6 +31,7 @@ class EditCookingStepBloc
           .debounceTime(const Duration(milliseconds: 300))
           .asyncExpand(mapper);
     });
+    on<SetEditCookingStepViewModel>(_onEditCookingStepViewModel);
     on<AddIngredient>(_onAddIngredient);
     on<RemoveIngredient>(_onRemoveIngredient);
     on<UpdateIngredient>(_onUpdateIngredient);
@@ -150,5 +144,18 @@ class EditCookingStepBloc
       (error) => emit(state.failed(event, error.message)),
       (_) => emit(state.success(event)),
     );
+  }
+
+  FutureOr<void> _onEditCookingStepViewModel(
+    SetEditCookingStepViewModel event,
+    Emitter<EditCookingStepState> emit,
+  ) {
+    emit(state.copyWith(
+      action: event,
+      mutation: BlocMutation.success,
+      recipe: event.recipe,
+      data: event.step,
+      isNew: event.isNew,
+    ));
   }
 }

@@ -1,4 +1,4 @@
-import 'package:ale/src/features/recipe/data/models/cooking_step_model.dart';
+import 'package:ale/src/features/recipe/domain/entities/food_recipe.dart';
 import 'package:ale/src/features/recipe/presentation/recipe_view/widgets/button_cooking_step_timer.dart';
 import 'package:ale/src/features/recipe/presentation/recipe_view/widgets/button_edit_cooking_step.dart';
 import 'package:ale/src/features/recipe/presentation/recipe_view/widgets/button_ingredient_info.dart';
@@ -6,7 +6,7 @@ import 'package:ale/src/features/recipe/presentation/recipe_view/widgets/checkbo
 import 'package:flutter/material.dart';
 
 class StepListTile extends StatelessWidget {
-  final CookingStepModel step;
+  final CookingStep step;
   final int number;
   final int total;
 

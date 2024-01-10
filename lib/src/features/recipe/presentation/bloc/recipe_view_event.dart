@@ -7,8 +7,15 @@ sealed class RecipeViewEvent extends Equatable {
   List<Object?> get props => [];
 }
 
+class SetRecipeViewModel extends RecipeViewEvent {
+  final FoodRecipe data;
+  const SetRecipeViewModel(this.data);
+  @override
+  List<Object?> get props => [data];
+}
+
 class SetCompletedStep extends RecipeViewEvent {
-  final CookingStepModel value;
+  final CookingStep value;
   final bool isCompleted;
 
   const SetCompletedStep(this.value, this.isCompleted);

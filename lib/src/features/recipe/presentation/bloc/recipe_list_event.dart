@@ -18,7 +18,7 @@ class NewRecipe extends RecipeListEvent {
   final String name;
   final String description;
   final int servings;
-  final Function(FoodRecipeModel created) onDone;
+  final Function(FoodRecipe created) onDone;
   const NewRecipe({
     required this.name,
     required this.description,
@@ -45,7 +45,7 @@ class ClearSelected extends RecipeListEvent {}
 class DeleteSelected extends RecipeListEvent {}
 
 class ReplaceExistingItem extends RecipeListEvent {
-  final FoodRecipeModel value;
+  final FoodRecipe value;
   const ReplaceExistingItem(this.value);
   @override
   List<Object> get props => [value];

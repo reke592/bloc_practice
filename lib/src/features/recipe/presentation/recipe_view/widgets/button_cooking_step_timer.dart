@@ -1,8 +1,8 @@
-import 'package:ale/src/features/recipe/data/models/cooking_step_model.dart';
+import 'package:ale/src/features/recipe/domain/entities/food_recipe.dart';
 import 'package:flutter/material.dart';
 
 class ButtonCookingStepTimer extends StatelessWidget {
-  final CookingStepModel step;
+  final CookingStep step;
 
   const ButtonCookingStepTimer({
     super.key,

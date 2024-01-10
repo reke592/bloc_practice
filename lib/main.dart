@@ -1,5 +1,5 @@
 import 'package:ale/src/features/recipe/domain/repositories/food_recipe_repository.dart';
-import 'package:ale/src/locator.dart';
+import 'package:ale/src/core/injection_container.dart';
 import 'package:ale/src/ui/behaviors/app_scroll_behavior.dart';
 import 'package:ale/src/ui/observers/app_bloc_observer.dart';
 import 'package:ale/src/router.dart';
@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         RepositoryProvider<FoodRecipeRepository>(
-          create: (context) => locator<FoodRecipeRepository>(),
+          create: (context) => ic<FoodRecipeRepository>(),
         ),
       ],
       child: MaterialApp.router(
