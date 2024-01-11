@@ -17,6 +17,15 @@ class FoodRecipeModel extends FoodRecipe {
     super.description = '',
   });
 
+  const FoodRecipeModel.empty()
+      : this(
+          id: null,
+          name: 'name',
+          serving: 1,
+          description: 'description',
+          steps: const [],
+        );
+
   factory FoodRecipeModel.fromJson(String source) =>
       FoodRecipeModel.fromMap(jsonDecode(source));
 
@@ -25,7 +34,9 @@ class FoodRecipeModel extends FoodRecipe {
         name: json['name'],
         serving: json['serving'],
         description: json['description'],
-        steps: json['steps'].map(CookingStepModel.fromMap).toList(),
+        steps: List<DataMap>.from(json['steps'])
+            .map(CookingStepModel.fromMap)
+            .toList(),
       );
 
   DataMap toMap() => {

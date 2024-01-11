@@ -9,8 +9,8 @@ class EditCookingStepState extends Equatable {
   final Object? error;
 
   const EditCookingStepState({
-    this.recipe = const FoodRecipe.empty(),
-    this.data = const CookingStep.empty(),
+    this.recipe = const FoodRecipeModel.empty(),
+    this.data = const CookingStepModel.empty(),
     this.isNew = true,
     this.mutation = BlocMutation.initial,
     this.action,

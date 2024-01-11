@@ -1,6 +1,6 @@
 part of 'food_recipe.dart';
 
-class CookingStep {
+class CookingStep extends Equatable {
   final int number;
 
   /// cooking duration
@@ -17,12 +17,12 @@ class CookingStep {
     required this.active,
   });
 
-  const CookingStep.empty()
-      : this(
-          number: 0,
-          duration: const Duration(),
-          ingredients: const [],
-          instructions: 'instructions',
-          active: true,
-        );
+  @override
+  List<Object?> get props => [
+        number,
+        duration.toString(),
+        ...ingredients,
+        instructions,
+        active,
+      ];
 }

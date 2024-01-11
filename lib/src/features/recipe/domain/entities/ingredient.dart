@@ -1,6 +1,6 @@
 part of 'food_recipe.dart';
 
-class Ingredient {
+class Ingredient extends Equatable {
   final String name;
   final double amount;
   final String unit;
@@ -11,10 +11,6 @@ class Ingredient {
     required this.unit,
   });
 
-  const Ingredient.empty()
-      : this(
-          amount: 0,
-          name: 'name',
-          unit: 'unit',
-        );
+  @override
+  List<Object?> get props => [name, amount, unit];
 }

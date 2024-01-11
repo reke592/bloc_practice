@@ -1,10 +1,12 @@
+import 'package:equatable/equatable.dart';
+
 part 'cooking_step.dart';
 part 'ingredient.dart';
 
 /// {@template food_recipe}
 /// Food Recipe domain aggregate root entity.
 /// {@endtemplate}
-class FoodRecipe {
+class FoodRecipe extends Equatable {
   final int? id;
   final String name;
   final String description;
@@ -20,18 +22,12 @@ class FoodRecipe {
     required this.description,
   });
 
-  const FoodRecipe.empty()
-      : this(
-          id: null,
-          name: 'name',
-          serving: 1,
-          description: 'description',
-          steps: const [],
-        );
-
   /// list of all ingredients from cooking steps
   List<Ingredient> get allIngredients => steps.fold(
         <Ingredient>[],
         (list, step) => step.active ? [...list, ...step.ingredients] : list,
       );
+
+  @override
+  List<Object?> get props => [id, name, serving, ...steps, description];
 }

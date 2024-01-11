@@ -29,7 +29,7 @@ ShellRoute recipeRoutes(
         path: '$root/view',
         name: 'view Recipe',
         builder: (context, state) => BlocProvider(
-          create: (context) => ic<RecipeViewBloc>()
+          create: (context) => inject<RecipeViewBloc>()
             ..add(SetRecipeViewModel(state.extra as FoodRecipeModel)),
           child: const RecipeViewScreen(),
         ),
@@ -41,7 +41,7 @@ ShellRoute recipeRoutes(
                 state.extra is! SetEditCookingStepViewModel ? root : null,
             builder: (context, state) {
               return BlocProvider(
-                create: (context) => ic<EditCookingStepBloc>()
+                create: (context) => inject<EditCookingStepBloc>()
                   ..add(state.extra as SetEditCookingStepViewModel),
                 child: const EditCookingStepScreen(),
               );
@@ -54,7 +54,7 @@ ShellRoute recipeRoutes(
       providers: [
         BlocProvider(
           create: (context) {
-            return ic<RecipeListBloc>()..add(const LoadFoodRecipes());
+            return inject<RecipeListBloc>()..add(const LoadFoodRecipes());
           },
         ),
       ],

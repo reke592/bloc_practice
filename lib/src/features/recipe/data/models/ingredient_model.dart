@@ -10,6 +10,13 @@ class IngredientModel extends Ingredient {
     required super.unit,
   });
 
+  const IngredientModel.empty()
+      : this(
+          amount: 0,
+          name: 'name',
+          unit: 'unit',
+        );
+
   factory IngredientModel.fromJson(String source) =>
       IngredientModel.fromMap(jsonDecode(source));
 

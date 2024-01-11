@@ -27,7 +27,9 @@ class _InputServingsState extends State<InputServings> {
   Widget build(BuildContext context) {
     // TODO: calculation of ingridient price
     return BlocConsumer<RecipeViewBloc, RecipeViewState>(
-      listenWhen: (_, current) => current.action is ChangeRecipeDetails,
+      listenWhen: (_, current) =>
+          current.action is SetRecipeViewModel ||
+          current.action is ChangeRecipeDetails,
       listener: (context, state) {
         if (state.isSuccess) {
           setState(() {

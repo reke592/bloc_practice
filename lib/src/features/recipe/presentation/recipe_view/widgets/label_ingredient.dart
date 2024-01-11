@@ -14,13 +14,18 @@ class LabelIngredient extends StatelessWidget {
   Widget build(BuildContext context) {
     // TODO: dictionary, to make it easy to read ingredients
     return BlocBuilder<RecipeViewBloc, RecipeViewState>(
+      buildWhen: (_, current) => current.action is AdjustServing,
       builder: (context, state) {
         double amount = ingredient.amount;
+        bool isAmountAjusted = false;
+
         if (state.adjustedServing != null &&
             state.adjustedServing != state.data.serving) {
           amount =
               ingredient.amount / (state.data.serving / state.adjustedServing!);
+          isAmountAjusted = amount != ingredient.amount;
         }
+
         return Wrap(
           children: [
             Text(
@@ -30,19 +35,18 @@ class LabelIngredient extends StatelessWidget {
             Text(
               ' ${ingredient.amount} ${ingredient.unit}',
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color:
-                        amount != ingredient.amount ? Colors.grey[300] : null,
-                    fontWeight:
-                        amount != ingredient.amount ? null : FontWeight.bold,
+                    color: isAmountAjusted ? Colors.grey[300] : null,
+                    fontWeight: isAmountAjusted ? null : FontWeight.bold,
                   ),
             ),
             // with serving adjusment
-            if (amount != ingredient.amount)
+            if (isAmountAjusted)
               Text(
                 ' ~ ${amount.toStringAsFixed(2)} ${ingredient.unit}',
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+                style: Theme.of(context)
+                    .textTheme
+                    .bodySmall
+                    ?.copyWith(fontWeight: FontWeight.bold),
               ),
           ],
         );

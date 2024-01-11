@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:ale/src/commons/enums/bloc_mutation.dart';
 import 'package:ale/src/features/recipe/data/models/cooking_step_model.dart';
+import 'package:ale/src/features/recipe/data/models/food_recipe_model.dart';
 import 'package:ale/src/features/recipe/data/models/ingredient_model.dart';
 import 'package:ale/src/features/recipe/domain/entities/food_recipe.dart';
 import 'package:ale/src/features/recipe/domain/repositories/food_recipe_repository.dart';

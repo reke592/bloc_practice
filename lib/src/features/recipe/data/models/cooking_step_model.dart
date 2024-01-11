@@ -18,6 +18,15 @@ class CookingStepModel extends CookingStep {
     super.active = true,
   });
 
+  const CookingStepModel.empty()
+      : this(
+          number: 0,
+          duration: const Duration(),
+          ingredients: const [],
+          instructions: 'instructions',
+          active: true,
+        );
+
   factory CookingStepModel.fromJson(String source) =>
       CookingStepModel.fromMap(jsonDecode(source));
 
@@ -25,8 +34,10 @@ class CookingStepModel extends CookingStep {
         number: json['number'],
         duration: _durationFromString(json['duration']),
         active: json['active'] == 1,
-        ingredients: json['ingredients'].map(IngredientModel.fromMap).toList(),
-        instructions: json['instruction'],
+        ingredients: List<DataMap>.from(json['ingredients'])
+            .map(IngredientModel.fromMap)
+            .toList(),
+        instructions: json['instructions'],
       );
 
   DataMap toMap() => {

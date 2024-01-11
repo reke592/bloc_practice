@@ -9,7 +9,7 @@ class RecipeViewState extends Equatable {
   final Object? error;
 
   const RecipeViewState({
-    this.data = const FoodRecipe.empty(),
+    this.data = const FoodRecipeModel.empty(),
     this.adjustedServing,
     this.completed = const {},
     this.mutation = BlocMutation.initial,

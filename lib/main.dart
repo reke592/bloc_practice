@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         RepositoryProvider<FoodRecipeRepository>(
-          create: (context) => ic<FoodRecipeRepository>(),
+          create: (context) => inject<FoodRecipeRepository>(),
         ),
       ],
       child: MaterialApp.router(
