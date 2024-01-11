@@ -1,4 +1,3 @@
-import 'package:ale/src/features/recipe/data/models/food_recipe_model.dart';
 import 'package:ale/src/features/recipe/presentation/bloc/edit_cooking_step_bloc.dart';
 import 'package:ale/src/features/recipe/presentation/bloc/recipe_list_bloc.dart';
 import 'package:ale/src/features/recipe/presentation/bloc/recipe_view_bloc.dart';
@@ -28,9 +27,11 @@ ShellRoute recipeRoutes(
       GoRoute(
         path: '$root/view',
         name: 'view Recipe',
+        redirect: (context, state) =>
+            state.extra is SetRecipeViewModel ? null : root,
         builder: (context, state) => BlocProvider(
-          create: (context) => inject<RecipeViewBloc>()
-            ..add(SetRecipeViewModel(state.extra as FoodRecipeModel)),
+          create: (context) =>
+              inject<RecipeViewBloc>()..add(state.extra as SetRecipeViewModel),
           child: const RecipeViewScreen(),
         ),
         routes: [
@@ -38,7 +39,7 @@ ShellRoute recipeRoutes(
             path: 'step',
             name: 'edit Cooking Step',
             redirect: (context, state) =>
-                state.extra is! SetEditCookingStepViewModel ? root : null,
+                state.extra is SetEditCookingStepViewModel ? null : root,
             builder: (context, state) {
               return BlocProvider(
                 create: (context) => inject<EditCookingStepBloc>()

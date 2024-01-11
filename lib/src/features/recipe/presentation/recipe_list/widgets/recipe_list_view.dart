@@ -1,4 +1,5 @@
 import 'package:ale/src/features/recipe/presentation/bloc/recipe_list_bloc.dart';
+import 'package:ale/src/features/recipe/presentation/bloc/recipe_view_bloc.dart';
 import 'package:ale/src/features/recipe/presentation/recipe_list/widgets/bottom_sheet_list_item_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -78,7 +79,7 @@ class _RecipeListViewState extends State<RecipeListView> {
                   : () {
                       context.pushNamed(
                         'view Recipe',
-                        extra: state.data[index],
+                        extra: SetRecipeViewModel(state.data[index]),
                       );
                     },
               onLongPress: () {
