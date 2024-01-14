@@ -30,11 +30,11 @@ class FoodRecipeModel extends FoodRecipe {
       FoodRecipeModel.fromMap(jsonDecode(source) as Map<String, dynamic>);
 
   factory FoodRecipeModel.fromMap(DataMap json) => FoodRecipeModel(
-        id: json['id'] as int,
+        id: json['id'] as int?,
         name: json['name'] as String,
         serving: json['serving'] as int,
         description: json['description'] as String,
-        steps: List<DataMap>.from(json['steps'] as List<DataMap>)
+        steps: List<DataMap>.from(json['steps'] as List)
             .map(CookingStepModel.fromMap)
             .toList(),
       );

@@ -34,7 +34,7 @@ class CookingStepModel extends CookingStep {
         number: json['number'] as int,
         duration: _durationFromString(json['duration'] as String),
         active: json['active'] == 1,
-        ingredients: List<DataMap>.from(json['ingredients'] as List<DataMap>)
+        ingredients: List<DataMap>.from(json['ingredients'] as List)
             .map(IngredientModel.fromMap)
             .toList(),
         instructions: json['instructions'] as String,
