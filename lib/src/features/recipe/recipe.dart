@@ -27,28 +27,28 @@ ShellRoute recipeRoutes(
       GoRoute(
         path: '$root/view',
         name: 'view Recipe',
-        redirect: (context, state) =>
-            state.extra is SetRecipeViewModel ? null : root,
+        redirect: (context, state) {
+          return state.extra is SetRecipeViewModel ? null : root;
+        },
         builder: (context, state) => BlocProvider(
           create: (context) =>
               inject<RecipeViewBloc>()..add(state.extra! as SetRecipeViewModel),
           child: const RecipeViewScreen(),
         ),
-        routes: [
-          GoRoute(
-            path: 'step',
-            name: 'edit Cooking Step',
-            redirect: (context, state) =>
-                state.extra is SetEditCookingStepViewModel ? null : root,
-            builder: (context, state) {
-              return BlocProvider(
-                create: (context) => inject<EditCookingStepBloc>()
-                  ..add(state.extra! as SetEditCookingStepViewModel),
-                child: const EditCookingStepScreen(),
-              );
-            },
-          ),
-        ],
+      ),
+      GoRoute(
+        path: '$root/view/step',
+        name: 'edit Cooking Step',
+        redirect: (context, state) {
+          return state.extra is SetEditCookingStepViewModel ? null : root;
+        },
+        builder: (context, state) {
+          return BlocProvider(
+            create: (context) => inject<EditCookingStepBloc>()
+              ..add(state.extra! as SetEditCookingStepViewModel),
+            child: const EditCookingStepScreen(),
+          );
+        },
       ),
     ],
     builder: (context, state, child) => MultiProvider(
