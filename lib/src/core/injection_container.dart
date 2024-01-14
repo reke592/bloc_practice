@@ -17,27 +17,33 @@ final inject = GetIt.I;
 /// initialize standard use cases
 void initStandardUsecases() {
   inject
-    ..registerFactory(() => RecipeListBloc(
-          repo: inject(),
-          getAllRecipes: inject(),
-          saveRecipe: inject(),
-          deleteRecepies: inject(),
-        ))
-    ..registerFactory(() => RecipeViewBloc(
-          repo: inject(),
-          saveRecipe: inject(),
-        ))
-    ..registerFactory(() => EditCookingStepBloc(
-          repo: inject(),
-          saveCookingStep: inject(),
-          deleteCookingStep: inject(),
-        ))
+    ..registerFactory(
+      () => RecipeListBloc(
+        repo: inject(),
+        getAllRecipes: inject(),
+        saveRecipe: inject(),
+        deleteRecepies: inject(),
+      ),
+    )
+    ..registerFactory(
+      () => RecipeViewBloc(
+        repo: inject(),
+        saveRecipe: inject(),
+      ),
+    )
+    ..registerFactory(
+      () => EditCookingStepBloc(
+        saveCookingStep: inject(),
+        deleteCookingStep: inject(),
+      ),
+    )
     ..registerLazySingleton(() => DeleteCookingStep(inject()))
     ..registerLazySingleton(() => DeleteRecepies(inject()))
     ..registerLazySingleton(() => GetAllRecipes(inject()))
     ..registerLazySingleton(() => SaveCookingStep(inject()))
     ..registerLazySingleton(() => SaveRecipe(inject()))
     ..registerLazySingleton<FoodRecipeRepository>(
-        () => FoodRecipeRepositoryImplementation(inject()))
-    ..registerLazySingleton<RecipeDataSource>(() => RecipeMemoryDataSource());
+      () => FoodRecipeRepositoryImplementation(inject()),
+    )
+    ..registerLazySingleton<RecipeDataSource>(RecipeMemoryDataSource.new);
 }

@@ -10,14 +10,12 @@ class RecipeMemoryDataSource extends RecipeDataSource {
       id: 1,
       name: 'Spicy Garlic Butter Seafood',
       description:
-          'This special sauce is so delicious and for the better result use fresh seafoods. '
-          'Enjoy it with white rice/fried rice or pineapple rice.',
+          'This special sauce is so delicious and for the better result use '
+          'fresh seafoods. Enjoy it with white rice/fried rice or pineapple rice.',
       serving: 2,
       steps: [
         CookingStepModel(
           number: 1,
-          active: true,
-          duration: Duration(),
           ingredients: [
             IngredientModel(name: 'Black Peppercorns', amount: 2, unit: 'tsp'),
             IngredientModel(name: 'Water', amount: 2, unit: 'l'),
@@ -26,7 +24,6 @@ class RecipeMemoryDataSource extends RecipeDataSource {
         ),
         CookingStepModel(
           number: 2,
-          active: true,
           duration: Duration(minutes: 2),
           ingredients: [
             IngredientModel(name: 'Shrimp', amount: 200, unit: 'g'),
@@ -35,20 +32,25 @@ class RecipeMemoryDataSource extends RecipeDataSource {
             IngredientModel(name: 'Sweet Corn', amount: 2, unit: 'pc'),
           ],
           instructions:
-              'Boil all ingredients. For shrimp, boil until it\'s pink. It takes about 2 minutes. '
-              'And continue boil the rest of ingredients until they are cooked/soft. '
-              'Strained, set a side.',
+              "Boil all ingredients. For shrimp, boil until it's pink. "
+              'It takes about 2 minutes. And continue boil the rest of '
+              'ingredients until they are cooked/soft. Strained, set a side.',
         ),
         CookingStepModel(
           number: 3,
-          active: true,
           duration: Duration(minutes: 5),
           ingredients: [
             IngredientModel(name: 'Butter', amount: 250, unit: 'g'),
             IngredientModel(
-                name: 'Korean chili paste', amount: 2, unit: 'tbsp'),
+              name: 'Korean chili paste',
+              amount: 2,
+              unit: 'tbsp',
+            ),
             IngredientModel(
-                name: 'yellow Thai curry paste', amount: 1, unit: 'package'),
+              name: 'yellow Thai curry paste',
+              amount: 1,
+              unit: 'package',
+            ),
             IngredientModel(name: 'Chicken stock', amount: 200, unit: 'ml'),
             IngredientModel(name: 'Garlic', amount: 5, unit: 'cloves'),
             IngredientModel(name: 'Olive Oil', amount: 2, unit: 'tbsp'),
@@ -56,18 +58,18 @@ class RecipeMemoryDataSource extends RecipeDataSource {
             IngredientModel(name: 'Brown Sugar', amount: 3, unit: 'tbsp'),
           ],
           instructions:
-              'In a frying pan, first add olive oil and fry the onion and garlic until it’s fragrance. '
-              'Next add butter until completely melted.Add Korean Chili paste, yellow Thai curry paste, '
-              'brown sugar, salt and the remaining black peppercorn. Last add chicken stock. '
-              'Let it simmer for about 5 minutes. Turn off the gas.',
+              'In a frying pan, first add olive oil and fry the onion and '
+              'garlic until it’s fragrance. Next add butter until completely '
+              'melted.Add Korean Chili paste, yellow Thai curry paste, '
+              'brown sugar, salt and the remaining black peppercorn. '
+              'Last add chicken stock. Let it simmer for about 5 minutes. '
+              'Turn off the gas.',
         ),
         CookingStepModel(
           number: 4,
-          active: true,
-          duration: Duration(),
-          ingredients: [],
           instructions:
-              'Add the shrimp, calamari, mussels and corn to the pan. Mixed with the sauce until it’s combined. '
+              'Add the shrimp, calamari, mussels and corn to the pan. '
+              'Mixed with the sauce until it’s combined. '
               'And your spicy garlic butter seafood is ready!',
         ),
       ],
@@ -82,7 +84,7 @@ class RecipeMemoryDataSource extends RecipeDataSource {
   @override
   Future<void> delete(List<int> ids) async {
     if (ids.isNotEmpty) {
-      for (var id in ids) {
+      for (final id in ids) {
         _data.removeWhere((element) => element.id == id);
       }
     }
@@ -126,7 +128,7 @@ class RecipeMemoryDataSource extends RecipeDataSource {
   }) async {
     final index = _data.indexWhere((element) => element.id == recipeId);
     if (index == -1) throw Exception('recipe not found');
-    FoodRecipeModel record = _data[index];
+    var record = _data[index];
     CookingStepModel updatedStep;
     final stepIndex =
         record.steps.indexWhere((element) => element.number == number);

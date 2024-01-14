@@ -6,8 +6,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 class ButtonEditCookingStep extends StatelessWidget {
+  const ButtonEditCookingStep({required this.step, super.key});
   final CookingStep step;
-  const ButtonEditCookingStep({super.key, required this.step});
 
   @override
   Widget build(BuildContext context) {

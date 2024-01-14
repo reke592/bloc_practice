@@ -61,9 +61,9 @@ class _EditCookingStepScreenState extends State<EditCookingStepScreen> {
         ),
         body: Padding(
           padding: const EdgeInsets.only(
-            top: 16.0,
-            left: 16.0,
-            right: 16.0,
+            top: 16,
+            left: 16,
+            right: 16,
           ),
           child: Column(
             children: [

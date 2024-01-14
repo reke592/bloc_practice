@@ -10,9 +10,10 @@ class ButtonDeleteStep extends StatelessWidget {
   Widget build(BuildContext context) {
     return OutlinedButton.icon(
       onPressed: () {
-        MessageDialog.confirm(context,
-                message: 'Are you sure you want to delete this cooking step?')
-            .then((proceed) {
+        MessageDialog.confirm(
+          context,
+          message: 'Are you sure you want to delete this cooking step?',
+        ).then((proceed) {
           if (proceed) {
             context.read<EditCookingStepBloc>().add(DeleteStep());
           }

@@ -7,8 +7,8 @@ import 'package:ale/src/features/recipe/domain/entities/food_recipe.dart';
 import 'package:ale/src/features/recipe/domain/recipe_domain_event.dart';
 import 'package:ale/src/features/recipe/domain/repositories/food_recipe_repository.dart';
 import 'package:ale/src/features/recipe/domain/usecases/save_recipe.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rxdart/rxdart.dart';
 
 part 'recipe_view_event.dart';
@@ -26,17 +26,22 @@ class RecipeViewBloc extends Bloc<RecipeViewEvent, RecipeViewState> {
     on<AddStep>(_onAddStep);
     on<UpdateStep>(_onUpdateStep);
     on<RemoveStep>(_onRemoveStep);
-    on<AdjustServing>(_onAdjustServing, transformer: (events, mapper) {
-      return events
-          .debounceTime(const Duration(milliseconds: 300))
-          .asyncExpand(mapper);
-    });
+    on<AdjustServing>(
+      _onAdjustServing,
+      transformer: (events, mapper) {
+        return events
+            .debounceTime(const Duration(milliseconds: 300))
+            .asyncExpand(mapper);
+      },
+    );
     _domainEventListener = _repo.getDomainEvents().listen((event) {
       if (event is RecipeStepsUpdated) {
         if (event.recipeId == state.data.id) {
-          return add(event.isNew
-              ? AddStep(event.value as CookingStepModel)
-              : UpdateStep(event.value as CookingStepModel));
+          return add(
+            event.isNew
+                ? AddStep(event.value as CookingStepModel)
+                : UpdateStep(event.value as CookingStepModel),
+          );
         }
       }
       if (event is RecipeStepsRemoved) {
@@ -44,10 +49,12 @@ class RecipeViewBloc extends Bloc<RecipeViewEvent, RecipeViewState> {
           return add(
             event.isPermanent
                 ? RemoveStep(event.number)
-                : UpdateStep(state.data.steps
-                    .cast<CookingStepModel>()
-                    .firstWhere((element) => element.number == event.number)
-                    .copyWith(active: false)),
+                : UpdateStep(
+                    state.data.steps
+                        .cast<CookingStepModel>()
+                        .firstWhere((element) => element.number == event.number)
+                        .copyWith(active: false),
+                  ),
           );
         }
       }
@@ -68,11 +75,13 @@ class RecipeViewBloc extends Bloc<RecipeViewEvent, RecipeViewState> {
     SetRecipeViewModel event,
     Emitter<RecipeViewState> emit,
   ) {
-    emit(state.copyWith(
-      action: event,
-      mutation: BlocMutation.success,
-      data: event.data,
-    ));
+    emit(
+      state.copyWith(
+        action: event,
+        mutation: BlocMutation.success,
+        data: event.data,
+      ),
+    );
   }
 
   FutureOr<void> _onSetCompletedStep(

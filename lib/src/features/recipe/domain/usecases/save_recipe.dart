@@ -46,7 +46,7 @@ class SaveRecipe extends UsecaseWithParam<FoodRecipe, SaveRecipeParam> {
       steps: param.steps,
     );
     return result.fold(
-      (error) => Left(error),
+      Left.new,
       (data) {
         _repo.pushDomainEvent(RecipeDetailsUpdated(data));
         return Right(data);

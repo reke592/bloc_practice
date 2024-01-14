@@ -7,12 +7,6 @@ part 'ingredient.dart';
 /// Food Recipe domain aggregate root entity.
 /// {@endtemplate}
 class FoodRecipe extends Equatable {
-  final int? id;
-  final String name;
-  final String description;
-  final int serving;
-  final List<CookingStep> steps;
-
   /// {@macro food_recipe}
   const FoodRecipe({
     required this.id,
@@ -21,6 +15,11 @@ class FoodRecipe extends Equatable {
     required this.steps,
     required this.description,
   });
+  final int? id;
+  final String name;
+  final String description;
+  final int serving;
+  final List<CookingStep> steps;
 
   /// list of all ingredients from cooking steps
   List<Ingredient> get allIngredients => steps.fold(

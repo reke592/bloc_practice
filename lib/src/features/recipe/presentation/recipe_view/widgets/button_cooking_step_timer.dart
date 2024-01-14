@@ -2,12 +2,11 @@ import 'package:ale/src/features/recipe/domain/entities/food_recipe.dart';
 import 'package:flutter/material.dart';
 
 class ButtonCookingStepTimer extends StatelessWidget {
-  final CookingStep step;
-
   const ButtonCookingStepTimer({
-    super.key,
     required this.step,
+    super.key,
   });
+  final CookingStep step;
 
   @override
   Widget build(BuildContext context) {

@@ -17,7 +17,7 @@ class FABCreateRecipe extends StatelessWidget {
             onPressed: state.isLoading
                 ? null
                 : () {
-                    showDialog(
+                    showDialog<RecipeDescriptionDialogResult>(
                       context: context,
                       builder: (dialogContext) {
                         return const RecipeDescriptionDialog();

@@ -12,7 +12,7 @@ Duration _durationFromString(String value) {
 class CookingStepModel extends CookingStep {
   const CookingStepModel({
     required super.number,
-    super.duration = const Duration(),
+    super.duration = Duration.zero,
     super.ingredients = const [],
     super.instructions = '',
     super.active = true,
@@ -21,23 +21,23 @@ class CookingStepModel extends CookingStep {
   const CookingStepModel.empty()
       : this(
           number: 0,
-          duration: const Duration(),
+          duration: Duration.zero,
           ingredients: const [],
           instructions: 'instructions',
           active: true,
         );
 
   factory CookingStepModel.fromJson(String source) =>
-      CookingStepModel.fromMap(jsonDecode(source));
+      CookingStepModel.fromMap(jsonDecode(source) as Map<String, dynamic>);
 
   factory CookingStepModel.fromMap(DataMap json) => CookingStepModel(
-        number: json['number'],
-        duration: _durationFromString(json['duration']),
+        number: json['number'] as int,
+        duration: _durationFromString(json['duration'] as String),
         active: json['active'] == 1,
-        ingredients: List<DataMap>.from(json['ingredients'])
+        ingredients: List<DataMap>.from(json['ingredients'] as List<DataMap>)
             .map(IngredientModel.fromMap)
             .toList(),
-        instructions: json['instructions'],
+        instructions: json['instructions'] as String,
       );
 
   DataMap toMap() => {

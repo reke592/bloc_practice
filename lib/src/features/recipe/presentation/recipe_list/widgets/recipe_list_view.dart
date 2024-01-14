@@ -13,7 +13,7 @@ class RecipeListView extends StatefulWidget {
 }
 
 class _RecipeListViewState extends State<RecipeListView> {
-  PersistentBottomSheetController? bottomSheet;
+  PersistentBottomSheetController<void>? bottomSheet;
 
   @override
   void dispose() {
@@ -59,7 +59,7 @@ class _RecipeListViewState extends State<RecipeListView> {
           separatorBuilder: (context, index) => const Divider(),
           itemCount: state.data.length,
           itemBuilder: (context, index) {
-            bool isSelected = state.selected.contains(state.data[index]);
+            final isSelected = state.selected.contains(state.data[index]);
             return ListTile(
               dense: true,
               selected: isSelected,

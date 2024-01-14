@@ -30,7 +30,7 @@ class IntroductionRecipe extends StatelessWidget {
                 ),
                 IconButton(
                   onPressed: () {
-                    showDialog(
+                    showDialog<RecipeDescriptionDialogResult>(
                       useRootNavigator: false,
                       context: context,
                       builder: (dialogContext) {
@@ -40,16 +40,18 @@ class IntroductionRecipe extends StatelessWidget {
                       },
                     ).then((value) {
                       if (value is RecipeDescriptionDialogResult) {
-                        context.read<RecipeViewBloc>().add(ChangeRecipeDetails(
-                              name: value.name,
-                              description: value.description,
-                              servings: value.servings,
-                            ));
+                        context.read<RecipeViewBloc>().add(
+                              ChangeRecipeDetails(
+                                name: value.name,
+                                description: value.description,
+                                servings: value.servings,
+                              ),
+                            );
                       }
                     });
                   },
                   icon: const Icon(Icons.edit),
-                )
+                ),
               ],
             ),
             Text(state.data.description),

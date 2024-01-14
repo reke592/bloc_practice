@@ -54,7 +54,7 @@ class SaveCookingStep
       active: param.active,
     );
     return result.fold(
-      (error) => Left(error),
+      Left.new,
       (data) {
         _repo.pushDomainEvent(
           RecipeStepsUpdated(

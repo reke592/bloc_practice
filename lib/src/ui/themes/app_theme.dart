@@ -14,19 +14,19 @@ class AppTheme {
         cardTheme: cardTheme,
       );
 
-  get inputDecorationTheme => const InputDecorationTheme(
+  InputDecorationTheme get inputDecorationTheme => const InputDecorationTheme(
         isDense: true,
         contentPadding: EdgeInsets.all(12),
         border: OutlineInputBorder(),
       );
 
-  get outlinedButtonTheme => OutlinedButtonThemeData(
+  OutlinedButtonThemeData get outlinedButtonTheme => OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
           padding: const EdgeInsets.symmetric(horizontal: 8),
         ),
       );
 
-  get cardTheme => CardTheme(
+  CardTheme get cardTheme => CardTheme(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
         ),

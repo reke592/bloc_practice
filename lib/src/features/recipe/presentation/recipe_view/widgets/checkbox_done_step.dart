@@ -4,23 +4,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CheckboxDoneStep extends StatelessWidget {
-  final int number;
-  final int total;
-  final CookingStep step;
-
   const CheckboxDoneStep({
-    super.key,
     required this.step,
     required this.number,
     required this.total,
+    super.key,
   });
+  final int number;
+  final int total;
+  final CookingStep step;
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<RecipeViewBloc, RecipeViewState>(
       buildWhen: (_, current) {
         if (current.action is SetCompletedStep) {
-          return (current.action as SetCompletedStep).value == step;
+          return (current.action! as SetCompletedStep).value == step;
         }
         return current.action is AddStep || current.action is UpdateStep;
       },
@@ -31,10 +30,12 @@ class CheckboxDoneStep extends StatelessWidget {
             Checkbox(
               value: state.completed.contains(index),
               onChanged: (value) {
-                context.read<RecipeViewBloc>().add(SetCompletedStep(
-                      step,
-                      value == true,
-                    ));
+                context.read<RecipeViewBloc>().add(
+                      SetCompletedStep(
+                        value: step,
+                        isCompleted: value ?? false == true,
+                      ),
+                    );
               },
             ),
             Text(

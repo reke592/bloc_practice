@@ -3,24 +3,22 @@ import 'package:ale/src/ui/themes/app_theme.dart';
 import 'package:flutter/material.dart';
 
 class RecipeDescriptionDialogResult {
-  final String name;
-  final String description;
-  final int servings;
-
   const RecipeDescriptionDialogResult({
     required this.name,
     required this.description,
     required this.servings,
   });
+  final String name;
+  final String description;
+  final int servings;
 }
 
 class RecipeDescriptionDialog extends StatelessWidget {
-  final FoodRecipe? data;
-
   const RecipeDescriptionDialog({
     super.key,
     this.data,
   });
+  final FoodRecipe? data;
 
   @override
   Widget build(BuildContext context) {

@@ -5,13 +5,13 @@ import 'package:ale/src/ui/themes/app_theme.dart';
 import 'package:flutter/material.dart';
 
 class IngredientDialogResult {
-  final Ingredient value;
   IngredientDialogResult({required this.value});
+  final Ingredient value;
 }
 
 class IngredientDialog extends StatelessWidget {
-  final Ingredient? value;
   const IngredientDialog({super.key, this.value});
+  final Ingredient? value;
 
   @override
   Widget build(BuildContext context) {

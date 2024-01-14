@@ -33,7 +33,7 @@ class DeleteCookingStep extends UsecaseWithParam<void, DeleteCookingStepParam> {
       permanent: param.permanent,
     );
     return result.fold(
-      (error) => Left(error),
+      Left.new,
       (data) {
         _repo.pushDomainEvent(
           RecipeStepsRemoved(

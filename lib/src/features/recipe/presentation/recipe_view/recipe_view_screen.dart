@@ -14,7 +14,7 @@ class RecipeViewScreen extends StatelessWidget {
       appBar: AppBar(),
       floatingActionButton: const FABAddCookingStep(),
       body: const Padding(
-        padding: EdgeInsets.only(left: 16.0, right: 16.0),
+        padding: EdgeInsets.only(left: 16, right: 16),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

@@ -10,7 +10,7 @@ class ButtonAddIngredient extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextButton.icon(
       onPressed: () {
-        showDialog(
+        showDialog<IngredientDialogResult>(
           context: context,
           builder: (dialogContext) {
             return const IngredientDialog();

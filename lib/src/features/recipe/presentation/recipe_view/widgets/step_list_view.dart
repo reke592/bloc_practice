@@ -19,7 +19,7 @@ class StepListView extends StatelessWidget {
         return Column(
           children: [
             for (var i = 0; i < steps.length; i++)
-              StepListTile(step: steps[i], number: i + 1, total: steps.length)
+              StepListTile(step: steps[i], number: i + 1, total: steps.length),
           ],
         );
       },

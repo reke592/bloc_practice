@@ -15,7 +15,7 @@ class IngredientListView extends StatelessWidget {
           itemBuilder: (context, index) {
             final item = state.data.ingredients[index];
             return ListTile(
-              contentPadding: const EdgeInsets.all(0),
+              contentPadding: EdgeInsets.zero,
               dense: true,
               title: Text(item.name),
               subtitle: Text('${item.amount} ${item.unit}'),
@@ -32,7 +32,7 @@ class IngredientListView extends StatelessWidget {
                   ),
                   IconButton(
                     onPressed: () {
-                      showDialog(
+                      showDialog<IngredientDialogResult>(
                         context: context,
                         builder: (dialogContext) {
                           return IngredientDialog(
@@ -41,12 +41,12 @@ class IngredientListView extends StatelessWidget {
                         },
                       ).then((result) {
                         if (result is IngredientDialogResult) {
-                          context
-                              .read<EditCookingStepBloc>()
-                              .add(UpdateIngredient(
-                                oldValue: item,
-                                newValue: result.value,
-                              ));
+                          context.read<EditCookingStepBloc>().add(
+                                UpdateIngredient(
+                                  oldValue: item,
+                                  newValue: result.value,
+                                ),
+                              );
                         }
                       });
                     },

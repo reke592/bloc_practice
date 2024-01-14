@@ -6,16 +6,15 @@ import 'package:ale/src/features/recipe/presentation/recipe_view/widgets/checkbo
 import 'package:flutter/material.dart';
 
 class StepListTile extends StatelessWidget {
-  final CookingStep step;
-  final int number;
-  final int total;
-
   const StepListTile({
-    super.key,
     required this.step,
     required this.number,
     required this.total,
+    super.key,
   });
+  final CookingStep step;
+  final int number;
+  final int total;
 
   @override
   Widget build(BuildContext context) {
@@ -38,12 +37,12 @@ class StepListTile extends StatelessWidget {
         children: [
           if (step.ingredients.isNotEmpty)
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(8),
               child: Wrap(
                 spacing: 8,
                 children: [
-                  for (var item in step.ingredients)
-                    ButtonIngredientInfo(ingredient: item)
+                  for (final item in step.ingredients)
+                    ButtonIngredientInfo(ingredient: item),
                 ],
               ),
             ),

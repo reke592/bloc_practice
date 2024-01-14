@@ -4,7 +4,7 @@ final class MessageDialog {
   MessageDialog._();
 
   static void showError(BuildContext context, Object error) {
-    showDialog(
+    showDialog<void>(
       context: context,
       barrierDismissible: false,
       builder: (dialogContext) {
@@ -19,7 +19,7 @@ final class MessageDialog {
                 },
                 icon: const Icon(Icons.close),
               ),
-            )
+            ),
           ],
         );
       },
@@ -48,6 +48,6 @@ final class MessageDialog {
           ],
         );
       },
-    ).then((value) => value == true);
+    ).then((value) => value ?? false == true);
   }
 }

@@ -8,54 +8,55 @@ sealed class RecipeViewEvent extends Equatable {
 }
 
 class SetRecipeViewModel extends RecipeViewEvent {
-  final FoodRecipe data;
   const SetRecipeViewModel(this.data);
+  final FoodRecipe data;
   @override
   List<Object?> get props => [data];
 }
 
 class SetCompletedStep extends RecipeViewEvent {
+  const SetCompletedStep({
+    required this.value,
+    required this.isCompleted,
+  });
   final CookingStep value;
   final bool isCompleted;
-
-  const SetCompletedStep(this.value, this.isCompleted);
 
   @override
   List<Object?> get props => [value];
 }
 
 class AdjustServing extends RecipeViewEvent {
-  final int? value;
   const AdjustServing(this.value);
+  final int? value;
   @override
   List<Object?> get props => [value];
 }
 
 class ChangeRecipeDetails extends RecipeViewEvent {
-  final String name;
-  final String description;
-  final int servings;
-
   const ChangeRecipeDetails({
     required this.name,
     required this.description,
     required this.servings,
   });
+  final String name;
+  final String description;
+  final int servings;
 
   @override
   List<Object?> get props => [name, description, servings];
 }
 
 class AddStep extends RecipeViewEvent {
-  final CookingStepModel value;
   const AddStep(this.value);
+  final CookingStepModel value;
   @override
   List<Object?> get props => [value];
 }
 
 class UpdateStep extends RecipeViewEvent {
-  final CookingStepModel value;
   const UpdateStep(this.value);
+  final CookingStepModel value;
   @override
   List<Object?> get props => [value];
 }

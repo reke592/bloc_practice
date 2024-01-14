@@ -18,12 +18,12 @@ class IngredientModel extends Ingredient {
         );
 
   factory IngredientModel.fromJson(String source) =>
-      IngredientModel.fromMap(jsonDecode(source));
+      IngredientModel.fromMap(jsonDecode(source) as DataMap);
 
   factory IngredientModel.fromMap(DataMap json) => IngredientModel(
-        name: json['name'],
-        amount: json['amount'],
-        unit: json['unit'],
+        name: json['name'] as String,
+        amount: json['amount'] as double,
+        unit: json['unit'] as String,
       );
 
   DataMap toMap() => {

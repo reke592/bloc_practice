@@ -1,12 +1,6 @@
 part of 'recipe_list_bloc.dart';
 
 class RecipeListState extends Equatable {
-  final List<FoodRecipe> data;
-  final RecipeListEvent? action;
-  final BlocMutation mutation;
-  final Object? error;
-  final Set<FoodRecipe> selected;
-
   const RecipeListState({
     this.data = const [],
     this.mutation = BlocMutation.initial,
@@ -14,6 +8,11 @@ class RecipeListState extends Equatable {
     this.error,
     this.selected = const {},
   });
+  final List<FoodRecipe> data;
+  final RecipeListEvent? action;
+  final BlocMutation mutation;
+  final Object? error;
+  final Set<FoodRecipe> selected;
 
   @override
   List<Object?> get props => [data, selected.length, error, action, mutation];

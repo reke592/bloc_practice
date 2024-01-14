@@ -10,9 +10,9 @@ import 'package:ale/src/features/recipe/domain/entities/food_recipe.dart';
 class FoodRecipeModel extends FoodRecipe {
   /// {@macro food_recipe}
   const FoodRecipeModel({
-    super.id,
     required super.name,
     required super.serving,
+    super.id,
     super.steps = const [],
     super.description = '',
   });
@@ -27,14 +27,14 @@ class FoodRecipeModel extends FoodRecipe {
         );
 
   factory FoodRecipeModel.fromJson(String source) =>
-      FoodRecipeModel.fromMap(jsonDecode(source));
+      FoodRecipeModel.fromMap(jsonDecode(source) as Map<String, dynamic>);
 
   factory FoodRecipeModel.fromMap(DataMap json) => FoodRecipeModel(
-        id: json['id'],
-        name: json['name'],
-        serving: json['serving'],
-        description: json['description'],
-        steps: List<DataMap>.from(json['steps'])
+        id: json['id'] as int,
+        name: json['name'] as String,
+        serving: json['serving'] as int,
+        description: json['description'] as String,
+        steps: List<DataMap>.from(json['steps'] as List<DataMap>)
             .map(CookingStepModel.fromMap)
             .toList(),
       );

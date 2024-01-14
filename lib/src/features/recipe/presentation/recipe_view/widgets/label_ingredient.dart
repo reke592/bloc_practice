@@ -4,20 +4,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class LabelIngredient extends StatelessWidget {
-  final Ingredient ingredient;
   const LabelIngredient({
-    super.key,
     required this.ingredient,
+    super.key,
   });
+  final Ingredient ingredient;
 
   @override
   Widget build(BuildContext context) {
-    // TODO: dictionary, to make it easy to read ingredients
+    // TODO(erric): dictionary, to make it easy to read ingredients.
     return BlocBuilder<RecipeViewBloc, RecipeViewState>(
       buildWhen: (_, current) => current.action is AdjustServing,
       builder: (context, state) {
-        double amount = ingredient.amount;
-        bool isAmountAjusted = false;
+        var amount = ingredient.amount;
+        var isAmountAjusted = false;
 
         if (state.adjustedServing != null &&
             state.adjustedServing != state.data.serving) {

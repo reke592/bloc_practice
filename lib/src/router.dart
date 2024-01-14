@@ -3,10 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class AppRouter {
+  AppRouter({this.initialLocation = '/'});
   final String initialLocation;
   final rootNavigatorKey = GlobalKey<NavigatorState>();
-
-  AppRouter({this.initialLocation = '/'});
 
   late final config = GoRouter(
     initialLocation: initialLocation,

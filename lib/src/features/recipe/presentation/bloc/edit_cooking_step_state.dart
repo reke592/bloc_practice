@@ -1,13 +1,6 @@
 part of 'edit_cooking_step_bloc.dart';
 
 class EditCookingStepState extends Equatable {
-  final FoodRecipe recipe;
-  final CookingStep data;
-  final bool isNew;
-  final BlocMutation mutation;
-  final EditCookingStepEvent? action;
-  final Object? error;
-
   const EditCookingStepState({
     this.recipe = const FoodRecipeModel.empty(),
     this.data = const CookingStepModel.empty(),
@@ -16,6 +9,12 @@ class EditCookingStepState extends Equatable {
     this.action,
     this.error,
   });
+  final FoodRecipe recipe;
+  final CookingStep data;
+  final bool isNew;
+  final BlocMutation mutation;
+  final EditCookingStepEvent? action;
+  final Object? error;
 
   @override
   List<Object?> get props => [data, error, action, mutation];

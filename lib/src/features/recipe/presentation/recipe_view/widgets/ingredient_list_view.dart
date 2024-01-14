@@ -18,7 +18,7 @@ class IngredientListView extends StatelessWidget {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            for (var item in state.data.allIngredients)
+            for (final item in state.data.allIngredients)
               LabelIngredient(ingredient: item),
           ],
         );

@@ -7,8 +7,8 @@ import 'package:ale/src/features/recipe/domain/repositories/food_recipe_reposito
 import 'package:ale/src/features/recipe/domain/usecases/delete_recepies.dart';
 import 'package:ale/src/features/recipe/domain/usecases/get_all_recipes.dart';
 import 'package:ale/src/features/recipe/domain/usecases/save_recipe.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'recipe_list_event.dart';
 part 'recipe_list_state.dart';
@@ -31,7 +31,7 @@ class RecipeListBloc extends Bloc<RecipeListEvent, RecipeListState> {
       if (event is RecipeDetailsUpdated && state.action is! NewRecipe) {
         add(ReplaceExistingItem(event.value));
       } else {
-        // TODO: optimize
+        // TODO(erric): optimize.
         add(const LoadFoodRecipes());
       }
     });
@@ -74,13 +74,15 @@ class RecipeListBloc extends Bloc<RecipeListEvent, RecipeListState> {
     Emitter<RecipeListState> emit,
   ) async {
     emit(state.loading(event));
-    final result = await saveRecipe(SaveRecipeParam(
-      id: null,
-      serving: event.servings,
-      name: event.name,
-      description: event.description,
-      steps: const [],
-    ));
+    final result = await saveRecipe(
+      SaveRecipeParam(
+        id: null,
+        serving: event.servings,
+        name: event.name,
+        description: event.description,
+        steps: const [],
+      ),
+    );
     result.fold(
       (error) => emit(state.failed(event, error.failureMessage)),
       (data) => emit(
@@ -145,25 +147,29 @@ class RecipeListBloc extends Bloc<RecipeListEvent, RecipeListState> {
     Emitter<RecipeListState> emit,
   ) async {
     emit(state.loading(event));
-    final result = await deleteRecepies(DeleteRecepiesParam(
-      state.selected.toList().map((e) => e.id!).toList(),
-    ));
+    final result = await deleteRecepies(
+      DeleteRecepiesParam(
+        state.selected.toList().map((e) => e.id!).toList(),
+      ),
+    );
     result.fold(
       (error) => emit(state.failed(event, error.failureMessage)),
       (_) {
         final updated = List<FoodRecipe>.from(state.data);
-        for (var item in state.selected) {
+        for (final item in state.selected) {
           updated.removeWhere((element) => element.id == item.id);
         }
-        for (var item in state.selected) {
+        for (final item in state.selected) {
           updated.removeWhere((element) => element.id == item.id);
         }
-        emit(state.copyWith(
-          mutation: BlocMutation.success,
-          action: event,
-          data: updated,
-          selected: const {},
-        ));
+        emit(
+          state.copyWith(
+            mutation: BlocMutation.success,
+            action: event,
+            data: updated,
+            selected: const {},
+          ),
+        );
       },
     );
     // try {

@@ -12,7 +12,7 @@ class BottomSheetListItemMenu extends StatelessWidget {
         return SizedBox(
           height: 60,
           child: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(8),
             child: Row(
               children: [
                 Text('${state.selected.length} selected'),

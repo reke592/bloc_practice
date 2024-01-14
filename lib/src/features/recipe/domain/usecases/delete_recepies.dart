@@ -4,8 +4,8 @@ import 'package:ale/src/features/recipe/domain/repositories/food_recipe_reposito
 import 'package:equatable/equatable.dart';
 
 class DeleteRecepiesParam extends Equatable {
-  final List<int> ids;
   const DeleteRecepiesParam(this.ids);
+  final List<int> ids;
   @override
   List<Object?> get props => ids;
 }

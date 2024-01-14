@@ -1,13 +1,6 @@
 part of 'recipe_view_bloc.dart';
 
 class RecipeViewState extends Equatable {
-  final FoodRecipe data;
-  final Set<String> completed;
-  final int? adjustedServing;
-  final RecipeViewEvent? action;
-  final BlocMutation mutation;
-  final Object? error;
-
   const RecipeViewState({
     this.data = const FoodRecipeModel.empty(),
     this.adjustedServing,
@@ -16,6 +9,12 @@ class RecipeViewState extends Equatable {
     this.action,
     this.error,
   });
+  final FoodRecipe data;
+  final Set<String> completed;
+  final int? adjustedServing;
+  final RecipeViewEvent? action;
+  final BlocMutation mutation;
+  final Object? error;
 
   bool get isInitial => mutation == BlocMutation.initial;
   bool get isLoading => mutation == BlocMutation.loading;

@@ -25,7 +25,7 @@ class _InputServingsState extends State<InputServings> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: calculation of ingridient price
+    // TODO(erric): calculation of ingridient price.
     return BlocConsumer<RecipeViewBloc, RecipeViewState>(
       listenWhen: (_, current) =>
           current.action is SetRecipeViewModel ||
